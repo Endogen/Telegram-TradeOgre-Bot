@@ -42,7 +42,7 @@ class TradeOgreBot:
         log_format = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
         logging.basicConfig(format=log_format, level=level)
 
-        handler = TimedRotatingFileHandler(logfile, when="midnight", interval=1)
+        handler = TimedRotatingFileHandler(logfile, when="midnight", interval=1, encoding="utf-8")
         handler.setFormatter(logging.Formatter(log_format))
         handler.extMatch = re.compile(r"^\d{8}$")
         handler.suffix = "%Y%m%d"
