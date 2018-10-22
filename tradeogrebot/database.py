@@ -6,7 +6,7 @@ import tradeogrebot.crypto as crypt
 class Database:
 
     # Initialize database
-    def __init__(self, password, db_path="data.db", sql_dir="sql"):
+    def __init__(self, password, db_path="data.db", sql_path="sql"):
         self._db_path = db_path
         self._password = password
 
@@ -15,9 +15,9 @@ class Database:
 
         sql = "SELECT name FROM sqlite_master"
         if not cur.execute(sql).fetchone():
-            for _, _, files in os.walk(sql_dir):
+            for _, _, files in os.walk(sql_path):
                 for file in files:
-                    with open(os.path.join(sql_dir, file)) as f:
+                    with open(os.path.join(sql_path, file)) as f:
                         cur.execute(f.read())
                         con.commit()
 

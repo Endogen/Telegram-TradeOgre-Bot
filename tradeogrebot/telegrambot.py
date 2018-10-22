@@ -7,14 +7,18 @@ from telegram import ParseMode
 from telegram.ext import Updater
 from telegram.error import InvalidToken
 from tradeogrebot.plugin import TradeOgreBotPlugin
+from tradeogrebot.config import ConfigManager as Cfg
 
 
 # TODO: Build main keyboard based on loaded plugins
 # TODO: Internationalize strings
 class TelegramBot:
 
-    def __init__(self, bot_token, bot_db, read_timeout=10, connect_timeout=10):
+    def __init__(self, bot_token, bot_db):
         self.db = bot_db
+
+        read_timeout = Cfg.get("tg_read_timeout")
+        connect_timeout = Cfg.get("tg_connect_timeout")
 
         kwargs = dict()
         if read_timeout:

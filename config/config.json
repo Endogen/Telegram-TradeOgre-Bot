@@ -1,9 +1,6 @@
 {
     "admin_id": 134166731,
-    "logfile": "log/debug.log",
-    "log_level": 20,
-    "db_path": "data/data.db",
-    "sql_folder": "sql",
-    "bot_token_file": "config/bot.token",
-    "update_url": "endogen/Telegram-TradeOgre-Bot/master"
+    "tg_read_timeout": 10,
+    "tg_connect_timeout": 10,
+    "update_slug": "endogen/Telegram-TradeOgre-Bot/master"
 }
