@@ -16,6 +16,7 @@ class TelegramBot:
 
     def __init__(self, bot_token, bot_db):
         self.db = bot_db
+        self.token = bot_token
 
         read_timeout = Cfg.get("tg_read_timeout")
         connect_timeout = Cfg.get("tg_connect_timeout")
@@ -40,12 +41,21 @@ class TelegramBot:
         self.dispatcher.add_error_handler(self.handle_telegram_error)
 
     # Start the bot
-    def bot_start(self):
+    def bot_start_polling(self):
         self.updater.start_polling(clean=True)
 
     # Go in idle mode
     def bot_idle(self):
         self.updater.idle()
+
+    def bot_start_webhook(self):
+        self.updater.start_webhook(
+            listen='0.0.0.0',
+            port=8443,
+            url_path=self.token,
+            key='private.key',
+            cert='cert.pem',
+            webhook_url=f"https://crackcat.de:8443/{self.token}")
 
     def load_plugins(self):
         for _, _, files in os.walk("plugins"):

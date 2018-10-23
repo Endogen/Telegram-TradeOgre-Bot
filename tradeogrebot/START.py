@@ -144,7 +144,7 @@ class TradeOgreBot:
             exit(f"ERROR: No token file '{token_path}' found")
 
     def start(self):
-        self.tg.bot_start()
+        self.tg.bot_start_polling()
         self.tg.bot_idle()
 
 
