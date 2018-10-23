@@ -9,12 +9,10 @@ from tradeogrebot.config import ConfigManager as Cfg
 from logging.handlers import TimedRotatingFileHandler
 
 
-# TODO: Add to README
-# https://stackoverflow.com/questions/2975624/how-to-run-a-python-script-in-the-background-even-after-i-logout-ssh
 # TODO: LICENSE & README
 # TODO: Manage requirements with 'pipenv'
 # See: https://github.com/dvf/blockchain
-# See: http://andrewsforge.com/article/python-new-package-landscape/
+# See: http://andrewsforge.com/article/python-new-package-landscape
 class TradeOgreBot:
 
     def __init__(self):
@@ -29,10 +27,17 @@ class TradeOgreBot:
         log_level = self.args.loglevel
         self._init_logger(log_path, log_level)
 
-        # Create database
+        # Prepare database
         sql_path = "../sql"
         db_path = self.args.database
         password = input("Enter DB password: ")
+
+        # Create 'data' directory if not present
+        data_path = os.path.dirname(db_path)
+        if not os.path.exists(data_path):
+            os.makedirs(data_path)
+
+        # Create database
         self.db = Database(password, db_path, sql_path)
 
         # Create bot
@@ -108,7 +113,7 @@ class TradeOgreBot:
 
         # Save logs if enabled
         if self.args.savelog:
-            # Create log directory if not present
+            # Create 'log' directory if not present
             log_path = os.path.dirname(logfile)
             if not os.path.exists(log_path):
                 os.makedirs(log_path)
