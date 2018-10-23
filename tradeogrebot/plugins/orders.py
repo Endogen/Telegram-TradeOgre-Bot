@@ -10,12 +10,12 @@ from telegram.ext import RegexHandler, CallbackQueryHandler
 class Orders(TradeOgreBotPlugin):
 
     def get_handlers(self):
-        return [self._get_regex_handler(), self._get_callback_handler()]
+        return [self._get_orders_handler(), self._get_orders_callback_handler()]
 
-    def _get_regex_handler(self):
+    def _get_orders_handler(self):
         return RegexHandler(f"^({lbl.BTN_ORDERS})$", self._orders)
 
-    def _get_callback_handler(self):
+    def _get_orders_callback_handler(self):
         regex = "^[a-z0-9]{8}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{12}$"
         return CallbackQueryHandler(self._callback_orders, pattern=regex)
 

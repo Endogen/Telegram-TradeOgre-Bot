@@ -22,10 +22,10 @@ class Trade(TradeOgreBotPlugin):
     TRADE_CONFIRM = auto()
 
     def get_handlers(self):
-        return [self._get_conversation_handler(),
+        return [self._get_trade_handler(),
                 self._get_trade_callback_handler()]
 
-    def _get_conversation_handler(self):
+    def _get_trade_handler(self):
         return ConversationHandler(
             entry_points=[RegexHandler(f"^({lbl.BTN_TRADE})$", self._trade, pass_user_data=True)],
             states={

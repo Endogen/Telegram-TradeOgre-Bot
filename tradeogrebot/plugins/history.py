@@ -18,10 +18,9 @@ class History(TradeOgreBotPlugin):
     TRADES_NEXT = auto()
 
     def get_handlers(self):
-        return [self._get_conversation_handler()]
+        return [self._get_history_handler()]
 
-    # TODO: Rename methods to something that makes more sense
-    def _get_conversation_handler(self):
+    def _get_history_handler(self):
         return ConversationHandler(
             entry_points=[RegexHandler(f"^({lbl.BTN_TRADES})$", self._trades)],
             states={
