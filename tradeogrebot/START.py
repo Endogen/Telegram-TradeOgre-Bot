@@ -9,6 +9,7 @@ from tradeogrebot.config import ConfigManager as Cfg
 from logging.handlers import TimedRotatingFileHandler
 
 
+# TODO: Make config file structured (add 'webhook' and 'telegram')
 # TODO: LICENSE & README
 # TODO: Manage requirements with 'pipenv'
 # See: https://github.com/dvf/blockchain
@@ -28,7 +29,7 @@ class TradeOgreBot:
         self._init_logger(log_path, log_level)
 
         # Prepare database
-        sql_path = "../sql"
+        sql_path = "sql"
         db_path = self.args.database
         password = input("Enter DB password: ")
 
@@ -53,7 +54,7 @@ class TradeOgreBot:
             "-cfg",
             dest="config",
             help="path to config file",
-            default="../config/config.json",
+            default="config/config.json",
             required=False,
             metavar="FILE")
 
@@ -71,7 +72,7 @@ class TradeOgreBot:
             "-log",
             dest="logfile",
             help="path to logfile",
-            default="../log/tradeogrebot.log",
+            default="log/tradeogrebot.log",
             required=False,
             metavar="FILE")
 
@@ -90,7 +91,7 @@ class TradeOgreBot:
             "-db",
             dest="database",
             help="path to SQLite database file",
-            default="../data/data.db",
+            default="data/data.db",
             required=False,
             metavar="FILE")
 
@@ -102,14 +103,24 @@ class TradeOgreBot:
             required=False,
             default=None)
 
+        # Webhook
+        parser.add_argument(
+            "--webhook",
+            dest="webhook",
+            action="store_true",
+            help="use webhook instead of polling",
+            required=False)
+        parser.set_defaults(webhook=False)
+
         return parser.parse_args()
 
+    # TODO: Plugins should be displayed in logs all together
     # Configure logging
     def _init_logger(self, logfile, level):
-        logger = logging.getLogger()
-
         log_format = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
         logging.basicConfig(format=log_format, level=level)
+
+        logger = logging.getLogger(__name__)
 
         # Save logs if enabled
         if self.args.savelog:
@@ -136,7 +147,7 @@ class TradeOgreBot:
         if self.args.token:
             return self.args.token
 
-        token_path = "../config/bot.token"
+        token_path = "config/bot.token"
         if os.path.isfile(token_path):
             with open(token_path, 'r') as file:
                 return file.read().splitlines()[0]
@@ -144,7 +155,11 @@ class TradeOgreBot:
             exit(f"ERROR: No token file '{token_path}' found")
 
     def start(self):
-        self.tg.bot_start_polling()
+        if self.args.webhook:
+            self.tg.bot_start_webhook()
+        else:
+            self.tg.bot_start_polling()
+
         self.tg.bot_idle()
 
 
