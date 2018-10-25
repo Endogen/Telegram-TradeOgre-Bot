@@ -2,5 +2,10 @@
     "admin_id": 134166731,
     "tg_read_timeout": 10,
     "tg_connect_timeout": 10,
+    "wh_listen": null,
+    "wh_port": null,
+    "wh_privkey_path": null,
+    "wh_cert_path": null,
+    "wh_url": null,
     "update_slug": "endogen/Telegram-TradeOgre-Bot/master"
 }

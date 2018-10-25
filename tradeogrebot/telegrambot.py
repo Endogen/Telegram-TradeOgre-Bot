@@ -50,15 +50,15 @@ class TelegramBot:
 
     def bot_start_webhook(self):
         self.updater.start_webhook(
-            listen='0.0.0.0',
-            port=8443,
+            listen=Cfg.get("wh_listen"),
+            port=Cfg.get("wh_port"),
             url_path=self.token,
-            key='private.key',
-            cert='cert.pem',
-            webhook_url=f"https://crackcat.de:8443/{self.token}")
+            key=Cfg.get("wh_privkey_path"),
+            cert=Cfg.get("wh_cert_path"),
+            webhook_url=f"{Cfg.get('wh_url')}:8443/{self.token}")
 
     def load_plugins(self):
-        for _, _, files in os.walk("plugins"):
+        for _, _, files in os.walk(os.path.join("tradeogrebot", "plugins")):
             for file in files:
                 if not file.lower().endswith(".py"):
                     continue
@@ -66,7 +66,7 @@ class TelegramBot:
                     continue
 
                 module_name = file[:-3]
-                module_path = f"plugins.{module_name}"
+                module_path = f"tradeogrebot.plugins.{module_name}"
 
                 try:
                     module = importlib.import_module(module_path)
