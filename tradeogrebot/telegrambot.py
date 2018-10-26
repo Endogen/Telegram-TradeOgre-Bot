@@ -76,7 +76,7 @@ class TelegramBot:
                     if isinstance(instance, TradeOgreBotPlugin):
                         for handler in instance.get_handlers():
                             self.dispatcher.add_handler(handler)
-                        logging.debug(f"Plugin '{module_name}' added")
+                        logging.info(f"Plugin '{module_name}' added")
                 except Exception as ex:
                     msg = f"File '{file}' can't be loaded as a plugin: {ex}"
                     logging.warning(msg)
