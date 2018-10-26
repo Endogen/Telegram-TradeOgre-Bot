@@ -82,7 +82,7 @@ class TradeOgreBot:
             dest="loglevel",
             type=int,
             choices=[0, 10, 20, 30, 40, 50],
-            help="0=Disabled, 10=Debug, 20=Info, 30=Warning, 40=Error, 50=Critical",
+            help="Disabled, Debug, Info, Warning, Error, Critical",
             default=30,
             required=False)
 
