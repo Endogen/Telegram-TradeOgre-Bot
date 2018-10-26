@@ -83,7 +83,7 @@ class TradeOgreBot:
             type=int,
             choices=[0, 10, 20, 30, 40, 50],
             help="0=Disabled, 10=Debug, 20=Info, 30=Warning, 40=Error, 50=Critical",
-            default=40,
+            default=30,
             required=False)
 
         # Database
@@ -114,13 +114,20 @@ class TradeOgreBot:
 
         return parser.parse_args()
 
-    # TODO: Plugins should be displayed in logs all together
     # Configure logging
     def _init_logger(self, logfile, level):
         log_format = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
         logging.basicConfig(format=log_format, level=level)
 
         logger = logging.getLogger(__name__)
+        logger.setLevel(level)
+
+        # Log to console
+        console_log = logging.StreamHandler()
+        console_log.setFormatter(logging.Formatter(log_format))
+        console_log.setLevel(level)
+
+        logger.addHandler(console_log)
 
         # Save logs if enabled
         if self.args.savelog:
@@ -129,18 +136,18 @@ class TradeOgreBot:
             if not os.path.exists(log_path):
                 os.makedirs(log_path)
 
-            handler = TimedRotatingFileHandler(
+            file_log = TimedRotatingFileHandler(
                 logfile,
-                when="midnight",
+                when="H",
                 interval=1,
                 encoding="utf-8")
 
-            handler.setFormatter(logging.Formatter(log_format))
-            handler.extMatch = re.compile(r"^\d{8}$")
-            handler.suffix = "%Y%m%d"
-            handler.setLevel(level)
+            file_log.setFormatter(logging.Formatter(log_format))
+            file_log.extMatch = re.compile(r"^\d{8}$")
+            file_log.suffix = "%Y%m%d"
+            file_log.setLevel(level)
 
-            logger.addHandler(handler)
+            logger.addHandler(file_log)
 
     # Read bot token from file
     def _get_bot_token(self):
