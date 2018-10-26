@@ -28,3 +28,4 @@ SPEECH = "💬"  # Feedback
 INFO = "ℹ"  # Info / Help
 CHECK = "✅"  # Done
 BULLETPOINT = "🔹"  # Bulletpoint
+OH_NO = "☹"  # No data
