@@ -71,7 +71,7 @@ class TradeOgreBotPlugin:
             if not data.api_key or not data.api_secret:
                 update.message.reply_text(
                     text=f"Set your *API keys* first with\n"
-                         f"{lbl.BTN_SETTINGS} `--> {lbl.BTN_API_KEYS}",
+                         f"{lbl.BTN_SETTINGS} `-->` {lbl.BTN_API_KEYS}",
                     parse_mode=ParseMode.MARKDOWN,
                     reply_markup=self.keyboard_main())
 
