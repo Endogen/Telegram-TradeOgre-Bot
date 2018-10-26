@@ -116,11 +116,10 @@ class TradeOgreBot:
 
     # Configure logging
     def _init_logger(self, logfile, level):
-        log_format = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
-        logging.basicConfig(format=log_format, level=level)
-
-        logger = logging.getLogger(__name__)
+        logger = logging.getLogger()
         logger.setLevel(level)
+
+        log_format = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 
         # Log to console
         console_log = logging.StreamHandler()
@@ -139,12 +138,9 @@ class TradeOgreBot:
             file_log = TimedRotatingFileHandler(
                 logfile,
                 when="H",
-                interval=1,
                 encoding="utf-8")
 
             file_log.setFormatter(logging.Formatter(log_format))
-            file_log.extMatch = re.compile(r"^\d{8}$")
-            file_log.suffix = "%Y%m%d"
             file_log.setLevel(level)
 
             logger.addHandler(file_log)
