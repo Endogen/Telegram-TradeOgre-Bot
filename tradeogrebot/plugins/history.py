@@ -34,10 +34,7 @@ class History(TradeOgreBotPlugin):
     @TradeOgreBotPlugin.add_user
     @TradeOgreBotPlugin.check_pair
     @TradeOgreBotPlugin.send_typing_action
-    def _trades(self, bot, update):
-        user_id = update.message.from_user.id
-        data = self.db.get_user_data(user_id)
-
+    def _trades(self, bot, update, data):
         self.history = TradeOgre().history(data.pair)
         self.history = sorted(self.history, key=lambda k: k['date'], reverse=True)
 

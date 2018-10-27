@@ -23,14 +23,12 @@ class Orders(TradeOgreBotPlugin):
     @TradeOgreBotPlugin.check_pair
     @TradeOgreBotPlugin.check_keys
     @TradeOgreBotPlugin.send_typing_action
-    def _orders(self, bot, update):
-        user_id = update.message.from_user.id
-        data = self.db.get_user_data(user_id)
-
-        coins = data.pair.split("-")
+    def _orders(self, bot, update, data):
         orders = TradeOgre().orders(market=data.pair, key=data.api_key, secret=data.api_secret)
 
         if orders:
+            coins = data.pair.split("-")
+
             for o in orders:
                 update.message.reply_text(
                     text=f"`{o['type']} {o['quantity']} {coins[1]}\n@ {o['price']} {coins[0]}`",

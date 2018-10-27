@@ -98,11 +98,8 @@ class Trade(TradeOgreBotPlugin):
     @TradeOgreBotPlugin.check_pair
     @TradeOgreBotPlugin.check_keys
     @TradeOgreBotPlugin.send_typing_action
-    def _trade(self, bot, update, user_data):
+    def _trade(self, bot, update, user_data, data):
         user_data.clear()
-
-        user_id = update.message.from_user.id
-        data = self.db.get_user_data(user_id)
         user_data["pair"] = data.pair.split("-")
         user_data["key"] = data.api_key
         user_data["secret"] = data.api_secret

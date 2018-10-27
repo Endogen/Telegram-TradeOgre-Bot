@@ -16,38 +16,36 @@ class Chart(TradeOgreBotPlugin):
 
     # Button label
     BTN_CHART = f"{emo.CHART} Chart"
-    TIME_FRAME = 71
+    TIME_FRAME = 71  # In hours
 
     def get_handlers(self):
-        return [self.__get_chart_handler()]
+        return [self._get_chart_handler()]
 
-    def __get_chart_handler(self):
-        return RegexHandler(f"^({lbl.BTN_CHART})$", self.__chart)
+    def _get_chart_handler(self):
+        return RegexHandler(f"^({lbl.BTN_CHART})$", self._chart)
 
     @TradeOgreBotPlugin.add_user
     @TradeOgreBotPlugin.check_pair
     @TradeOgreBotPlugin.send_typing_action
-    def __chart(self, bot, update):
-        user_id = update.message.from_user.id
-        data = self.db.get_user_data(user_id)
+    def _chart(self, bot, update, data):
         from_sy = data.pair.split("-")[0]
         to_sy = data.pair.split("-")[1]
 
         days = int((self.TIME_FRAME + 1) / 24)
 
-        data = CryptoCompare().historical_ohlcv_hourly(to_sy, from_sy, self.TIME_FRAME)["Data"]
+        ohlcv = CryptoCompare().historical_ohlcv_hourly(to_sy, from_sy, self.TIME_FRAME)["Data"]
 
-        if not data:
+        if not ohlcv:
             update.message.reply_text(
                 text=f"No OHLC data available for {to_sy} {emo.OH_NO}",
                 parse_mode=ParseMode.MARKDOWN)
             return
 
-        o = [value["open"] for value in data]
-        h = [value["high"] for value in data]
-        l = [value["low"] for value in data]
-        c = [value["close"] for value in data]
-        t = [value["time"] for value in data]
+        o = [value["open"] for value in ohlcv]
+        h = [value["high"] for value in ohlcv]
+        l = [value["low"] for value in ohlcv]
+        c = [value["close"] for value in ohlcv]
+        t = [value["time"] for value in ohlcv]
 
         fig = fif.create_candlestick(o, h, l, c, pd.to_datetime(t, unit='s'))
         fig['layout']['yaxis'].update(tickformat="0.4r")

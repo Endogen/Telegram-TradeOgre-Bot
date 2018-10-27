@@ -29,6 +29,7 @@ class TradeOgreBotPlugin:
                 action=ChatAction.TYPING)
 
             return func(self, bot, update, **kwargs)
+
         return _send_typing_action
 
     # Decorator to add users if not already present
@@ -46,10 +47,11 @@ class TradeOgreBotPlugin:
     @classmethod
     def check_pair(cls, func):
         def _check_pair(self, bot, update, **kwargs):
-            user_id = update.message.from_user.id
-            data = self.db.get_user_data(user_id)
+            if "data" not in kwargs or not kwargs["data"]:
+                user_id = update.message.from_user.id
+                kwargs["data"] = self.db.get_user_data(user_id)
 
-            if not data.pair:
+            if not kwargs["data"].pair:
                 update.message.reply_text(
                     text=f"Set your *trading pair* first with\n"
                          f"{lbl.BTN_SETTINGS} `-->` {lbl.BTN_PAIR}",
@@ -65,10 +67,11 @@ class TradeOgreBotPlugin:
     @classmethod
     def check_keys(cls, func):
         def _check_keys(self, bot, update, **kwargs):
-            user_id = update.message.from_user.id
-            data = self.db.get_user_data(user_id)
+            if "data" not in kwargs or not kwargs["data"]:
+                user_id = update.message.from_user.id
+                kwargs["data"] = self.db.get_user_data(user_id)
 
-            if not data.api_key or not data.api_secret:
+            if not kwargs["data"].api_key or not kwargs["data"].api_secret:
                 update.message.reply_text(
                     text=f"Set your *API keys* first with\n"
                          f"{lbl.BTN_SETTINGS} `-->` {lbl.BTN_API_KEYS}",

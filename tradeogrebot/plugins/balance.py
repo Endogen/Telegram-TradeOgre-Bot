@@ -18,11 +18,8 @@ class Balance(TradeOgreBotPlugin):
     @TradeOgreBotPlugin.check_pair
     @TradeOgreBotPlugin.check_keys
     @TradeOgreBotPlugin.send_typing_action
-    def _balance(self, bot, update):
-        user_id = update.message.from_user.id
-        data = self.db.get_user_data(user_id)
+    def _balance(self, bot, update, data):
         coin = data.pair.split("-")[1].upper()
-
         balance = TradeOgre().balance(coin, key=data.api_key, secret=data.api_secret)
 
         if not self.trade_ogre_api_error(balance, update):

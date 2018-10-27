@@ -17,14 +17,11 @@ class Ticker(TradeOgreBotPlugin):
     @TradeOgreBotPlugin.add_user
     @TradeOgreBotPlugin.check_pair
     @TradeOgreBotPlugin.send_typing_action
-    def _ticker(self, bot, update):
-        user_id = update.message.from_user.id
-        data = self.db.get_user_data(user_id)
-        coins = data.pair.split("-")
-
+    def _ticker(self, bot, update, data):
         ticker = TradeOgre().ticker(data.pair)
 
         if not self.trade_ogre_api_error(ticker, update):
+            coins = data.pair.split("-")
             update.message.reply_text(
                 text=f"`{coins[1]}: {ticker['price']} {coins[0]}`",
                 parse_mode=ParseMode.MARKDOWN)

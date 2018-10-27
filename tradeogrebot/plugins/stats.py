@@ -17,13 +17,11 @@ class Stats(TradeOgreBotPlugin):
     @TradeOgreBotPlugin.add_user
     @TradeOgreBotPlugin.check_pair
     @TradeOgreBotPlugin.send_typing_action
-    def _stats(self, bot, update):
-        user_id = update.message.from_user.id
-        data = self.db.get_user_data(user_id)
+    def _stats(self, bot, update, data):
         coins = data.pair.split("-")
+        listings = Market().listings()
 
         coin_id = None
-        listings = Market().listings()
         for listing in listings["data"]:
             if coins[1].upper() == listing["symbol"].upper():
                 coin_id = listing["id"]
