@@ -2,7 +2,7 @@ import json
 import requests
 
 
-class CoinGecko:
+class CoinGecko(object):
 
     _base_url = 'https://api.coingecko.com/api/v3/'
     _request_timeout = 120
