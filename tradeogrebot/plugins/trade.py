@@ -201,10 +201,10 @@ class Trade(TradeOgreBotPlugin):
             return ConversationHandler.END
 
         if user_data["type"] == "buy":
-            user_data["amount"] = self.trim_zeros((percent * balance) / 100.0)
+            user_data["amount"] = self.trm_zro((percent * balance) / 100.0)
             user_data["price"] = '{0:.8f}'.format(float(user_data["price"]))
             amount_of_coins = float(user_data["amount"]) / float(user_data["price"])
-            amount_of_coins = self.trim_zeros(amount_of_coins)
+            amount_of_coins = self.trm_zro(amount_of_coins)
 
             update.message.reply_text(
                 text=f"`"
@@ -219,10 +219,10 @@ class Trade(TradeOgreBotPlugin):
                 reply_markup=self._keyboard_trade_confirm())
 
         elif user_data["type"] == "sell":
-            user_data["amount"] = self.trim_zeros((percent * balance) / 100.0)
+            user_data["amount"] = self.trm_zro((percent * balance) / 100.0)
             user_data["price"] = '{0:.8f}'.format(float(user_data["price"]))
             value = float(user_data["amount"]) * float(user_data["price"])
-            value = self.trim_zeros(value)
+            value = self.trm_zro(value)
 
             update.message.reply_text(
                 text=f"`"
