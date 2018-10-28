@@ -15,15 +15,21 @@ class Balance(TradeOgreBotPlugin):
         return RegexHandler(f"^({lbl.BTN_BALANCE})$", self._balance)
 
     @TradeOgreBotPlugin.add_user
-    @TradeOgreBotPlugin.check_pair
     @TradeOgreBotPlugin.check_keys
+    @TradeOgreBotPlugin.check_pair
     @TradeOgreBotPlugin.send_typing_action
     def _balance(self, bot, update, data):
-        coin = data.pair.split("-")[1].upper()
-        balance = TradeOgre().balance(coin, key=data.api_key, secret=data.api_secret)
+        tr = TradeOgre(key=data.api_key, secret=data.api_secret)
+        act_coin = data.pair.split("-")[1].upper()
 
-        if not self.trade_ogre_api_error(balance, update):
-            update.message.reply_text(
-                text=f"`{coin}: {balance['balance']}\n"
-                     f"(Avail. {balance['available']})`",
-                parse_mode=ParseMode.MARKDOWN)
+        all_msg = "Other coins\n"
+        act_msg = "Active coin\n"
+
+        for coin, value in tr.balances()["balances"].items():
+            if coin == act_coin:
+                act_msg += f"`{coin}: {self.trm_zro(value)}\n`"
+            elif self.trm_zro(value) is not "0":
+                all_msg += f"`{coin}: {self.trm_zro(value)}\n`"
+
+        update.message.reply_text(text=all_msg, parse_mode=ParseMode.MARKDOWN)
+        update.message.reply_text(text=act_msg, parse_mode=ParseMode.MARKDOWN)
