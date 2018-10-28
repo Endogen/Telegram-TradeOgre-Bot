@@ -38,7 +38,7 @@ class Chart(TradeOgreBotPlugin):
         to_cur = data.pair.split("-")[1]
 
         self.symbol = to_cur
-        logo_thread = threading.Thread(target=self.get_coin_logo_url())
+        logo_thread = threading.Thread(target=self._get_coin_logo_url())
         logo_thread.start()
 
         for coin in CoinGecko().get_coins_list():
@@ -121,7 +121,7 @@ class Chart(TradeOgreBotPlugin):
             photo=io.BufferedReader(BytesIO(pio.to_image(fig, format="webp"))),
             parse_mode=ParseMode.MARKDOWN)
 
-    def get_coin_logo_url(self):
+    def _get_coin_logo_url(self):
         listings = Market().listings()
 
         coin_id = None
