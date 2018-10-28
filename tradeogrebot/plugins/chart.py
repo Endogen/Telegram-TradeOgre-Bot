@@ -19,7 +19,7 @@ class Chart(TradeOgreBotPlugin):
 
     # Button label
     BTN_CHART = f"{emo.CHART} Chart"
-    TIME_FRAME = 72  # In hours
+    TIME_FRAME = 72  # Hours
 
     logo_url = str()
     symbol = str()
