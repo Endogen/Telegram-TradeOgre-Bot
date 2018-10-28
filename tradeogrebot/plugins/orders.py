@@ -24,14 +24,21 @@ class Orders(TradeOgreBotPlugin):
     @TradeOgreBotPlugin.check_keys
     @TradeOgreBotPlugin.send_typing_action
     def _orders(self, bot, update, data):
-        orders = TradeOgre().orders(market=data.pair, key=data.api_key, secret=data.api_secret)
+        orders = TradeOgre().orders(key=data.api_key, secret=data.api_secret)
 
         if orders:
             coins = data.pair.split("-")
 
             for o in orders:
+                market = o["market"].split("-")
+                msg = f"`{o['type']} {o['quantity']} {market[1]}\n@ {o['price']} {market[0]}`"
+
+                # Check if order is for active market
+                if o["market"].split("-")[1] == coins[1]:
+                    msg = "Active coin\n" + msg
+
                 update.message.reply_text(
-                    text=f"`{o['type']} {o['quantity']} {coins[1]}\n@ {o['price']} {coins[0]}`",
+                    text=msg,
                     parse_mode=ParseMode.MARKDOWN,
                     reply_markup=self._keyboard_order_close(o["uuid"]))
         else:
