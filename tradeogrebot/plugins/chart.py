@@ -1,26 +1,23 @@
 import io
+import pandas as pd
 import plotly.io as pio
-import plotly.figure_factory as fif
+import plotly.graph_objs as go
 import tradeogrebot.emoji as emo
 import tradeogrebot.labels as lbl
 
-import plotly.graph_objs as go
-import pandas as pd
-from pandas import DataFrame
-
 from io import BytesIO
+from pandas import DataFrame
 from telegram import ParseMode
 from telegram.ext import RegexHandler
-from tradeogrebot.plugin import TradeOgreBotPlugin
 from tradeogrebot.api.coingecko import CoinGecko
-from tradeogrebot.api.cryptocompare import CryptoCompare
+from tradeogrebot.plugin import TradeOgreBotPlugin
 
 
 class Chart(TradeOgreBotPlugin):
 
     # Button label
     BTN_CHART = f"{emo.CHART} Chart"
-    TIME_FRAME = 71  # In hours
+    TIME_FRAME = 72  # In hours
 
     def get_handlers(self):
         return [self._get_chart_handler()]
@@ -32,21 +29,20 @@ class Chart(TradeOgreBotPlugin):
     @TradeOgreBotPlugin.check_pair
     @TradeOgreBotPlugin.send_typing_action
     def _chart(self, bot, update, data):
-        symbol = data.pair.split("-")[1]
+        from_cur = data.pair.split("-")[0]
+        to_cur = data.pair.split("-")[1]
         for coin in CoinGecko().get_coins_list():
-            if coin["symbol"] == symbol.lower():
+            if coin["symbol"].lower() == to_cur.lower():
                 coin_id = coin["id"]
                 break
 
-        days = 3
-        vs_cur = "btc"
+        vs_cur = from_cur.lower()
+        days = int(self.TIME_FRAME / 24)
         market_data = CoinGecko().get_coin_market_chart_by_id(coin_id, vs_cur, days)
 
         # Volume
-
-        # TODO: Do this as a Bar-Graph
         df_volume = DataFrame(market_data["total_volumes"], columns=["DateTime", "Volume"])
-        df_volume['DateTime'] = pd.to_datetime(df_volume['DateTime'], unit='ms')
+        df_volume["DateTime"] = pd.to_datetime(df_volume["DateTime"], unit="ms")
         volume = go.Scattergl(
             x=df_volume.get("DateTime"),
             y=df_volume.get("Volume"),
@@ -55,19 +51,19 @@ class Chart(TradeOgreBotPlugin):
 
         # Price
         df_price = DataFrame(market_data["prices"], columns=["DateTime", "Price"])
-        df_price['DateTime'] = pd.to_datetime(df_price['DateTime'], unit='ms')
+        df_price["DateTime"] = pd.to_datetime(df_price["DateTime"], unit="ms")
         price = go.Scattergl(
             x=df_price.get("DateTime"),
             y=df_price.get("Price"),
             yaxis="y2",
             name="Price",
             line=dict(
-                color=('rgb(22, 96, 167)'),
+                color=("rgb(22, 96, 167)"),
                 width=2
             )
         )
 
-        title = f"Price of {symbol} in {vs_cur.upper()} for past {days} days"
+        title = f"Price of {to_cur} in {vs_cur.upper()} for {days} days"
 
         data = [price, volume]
         layout = go.Layout(
@@ -76,57 +72,26 @@ class Chart(TradeOgreBotPlugin):
             title=title,
             height=600,
             width=800,
-            legend=dict(orientation='h', yanchor='top', xanchor='center', y=1, x=0.5),
+            legend=dict(orientation="h", yanchor="top", xanchor="center", y=1, x=0.5),
             shapes=[{
-                'type': 'line',
-                'xref': 'paper',
-                'yref': 'y2',
-                'x0': 0,
-                'x1': 1,
-                'y0': market_data["prices"][len(market_data["prices"]) - 1][1],
-                'y1': market_data["prices"][len(market_data["prices"]) - 1][1],
-                'line': {
-                    'color': 'rgb(50, 171, 96)',
-                    'width': 1,
-                    'dash': 'dot'
+                "type": "line",
+                "xref": "paper",
+                "yref": "y2",
+                "x0": 0,
+                "x1": 1,
+                "y0": market_data["prices"][len(market_data["prices"]) - 1][1],
+                "y1": market_data["prices"][len(market_data["prices"]) - 1][1],
+                "line": {
+                    "color": "rgb(50, 171, 96)",
+                    "width": 1,
+                    "dash": "dot"
                 }
             }],
         )
 
         fig = go.Figure(data=data, layout=layout)
-        fig['layout']['yaxis2'].update(tickformat="0.8f")
+        fig["layout"]["yaxis2"].update(tickformat="0.8f")
 
         update.message.reply_photo(
-            photo=io.BufferedReader(BytesIO(pio.to_image(fig, format='webp'))),
-            parse_mode=ParseMode.MARKDOWN)
-
-    @TradeOgreBotPlugin.add_user
-    @TradeOgreBotPlugin.check_pair
-    @TradeOgreBotPlugin.send_typing_action
-    def _chart_old(self, bot, update, data):
-        from_sy = data.pair.split("-")[0]
-        to_sy = data.pair.split("-")[1]
-
-        days = int((self.TIME_FRAME + 1) / 24)
-
-        ohlcv = CryptoCompare().historical_ohlcv_hourly(to_sy, from_sy, self.TIME_FRAME)["Data"]
-
-        if not ohlcv:
-            update.message.reply_text(
-                text=f"No OHLC data available for {to_sy} {emo.OH_NO}",
-                parse_mode=ParseMode.MARKDOWN)
-            return
-
-        o = [value["open"] for value in ohlcv]
-        h = [value["high"] for value in ohlcv]
-        l = [value["low"] for value in ohlcv]
-        c = [value["close"] for value in ohlcv]
-        t = [value["time"] for value in ohlcv]
-
-        fig = fif.create_candlestick(o, h, l, c, pd.to_datetime(t, unit='s'))
-        fig['layout']['yaxis'].update(tickformat="0.4r")
-        fig['layout'].update(title=f"Price of {to_sy} in {from_sy} for {days} days")
-
-        update.message.reply_photo(
-            photo=io.BufferedReader(BytesIO(pio.to_image(fig, format='webp'))),
+            photo=io.BufferedReader(BytesIO(pio.to_image(fig, format="webp"))),
             parse_mode=ParseMode.MARKDOWN)
