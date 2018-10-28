@@ -1,4 +1,5 @@
 import io
+import threading
 import pandas as pd
 import plotly.io as pio
 import plotly.graph_objs as go
@@ -7,6 +8,7 @@ import tradeogrebot.labels as lbl
 
 from io import BytesIO
 from pandas import DataFrame
+from coinmarketcap import Market
 from telegram import ParseMode
 from telegram.ext import RegexHandler
 from tradeogrebot.api.coingecko import CoinGecko
@@ -18,6 +20,9 @@ class Chart(TradeOgreBotPlugin):
     # Button label
     BTN_CHART = f"{emo.CHART} Chart"
     TIME_FRAME = 72  # In hours
+
+    logo_url = str()
+    symbol = str()
 
     def get_handlers(self):
         return [self._get_chart_handler()]
@@ -31,6 +36,11 @@ class Chart(TradeOgreBotPlugin):
     def _chart(self, bot, update, data):
         from_cur = data.pair.split("-")[0]
         to_cur = data.pair.split("-")[1]
+
+        self.symbol = to_cur
+        logo_thread = threading.Thread(target=self.get_coin_logo_url())
+        logo_thread.start()
+
         for coin in CoinGecko().get_coins_list():
             if coin["symbol"].lower() == to_cur.lower():
                 coin_id = coin["id"]
@@ -43,7 +53,7 @@ class Chart(TradeOgreBotPlugin):
         # Volume
         df_volume = DataFrame(market_data["total_volumes"], columns=["DateTime", "Volume"])
         df_volume["DateTime"] = pd.to_datetime(df_volume["DateTime"], unit="ms")
-        volume = go.Scattergl(
+        volume = go.Scatter(
             x=df_volume.get("DateTime"),
             y=df_volume.get("Volume"),
             name="Volume"
@@ -52,7 +62,7 @@ class Chart(TradeOgreBotPlugin):
         # Price
         df_price = DataFrame(market_data["prices"], columns=["DateTime", "Price"])
         df_price["DateTime"] = pd.to_datetime(df_price["DateTime"], unit="ms")
-        price = go.Scattergl(
+        price = go.Scatter(
             x=df_price.get("DateTime"),
             y=df_price.get("Price"),
             yaxis="y2",
@@ -63,16 +73,31 @@ class Chart(TradeOgreBotPlugin):
             )
         )
 
-        title = f"Price of {to_cur} in {vs_cur.upper()} for {days} days"
+        logo_thread.join()
 
-        data = [price, volume]
         layout = go.Layout(
-            yaxis=dict(domain=[0, 0.20]),
-            yaxis2=dict(domain=[0.25, 1]),
-            title=title,
-            height=600,
+            images=[dict(
+                source=self.logo_url,
+                opacity=0.8,
+                xref="paper", yref="paper",
+                x=1.05, y=1,
+                sizex=0.2, sizey=0.2,
+                xanchor="right", yanchor="bottom"
+            )],
+            autosize=False,
             width=800,
-            legend=dict(orientation="h", yanchor="top", xanchor="center", y=1, x=0.5),
+            height=600,
+            margin=go.layout.Margin(
+                l=125,
+                r=50,
+                b=70,
+                t=100,
+                pad=4
+            ),
+            yaxis=dict(domain=[0, 0.20], ticksuffix="  "),
+            yaxis2=dict(domain=[0.25, 1], ticksuffix="  "),
+            title=f"Price of {to_cur} in {vs_cur.upper()} for {days} days",
+            legend=dict(orientation="h", yanchor="top", xanchor="center", y=1.05, x=0.5),
             shapes=[{
                 "type": "line",
                 "xref": "paper",
@@ -89,9 +114,20 @@ class Chart(TradeOgreBotPlugin):
             }],
         )
 
-        fig = go.Figure(data=data, layout=layout)
+        fig = go.Figure(data=[price, volume], layout=layout)
         fig["layout"]["yaxis2"].update(tickformat="0.8f")
 
         update.message.reply_photo(
             photo=io.BufferedReader(BytesIO(pio.to_image(fig, format="webp"))),
             parse_mode=ParseMode.MARKDOWN)
+
+    def get_coin_logo_url(self):
+        listings = Market().listings()
+
+        coin_id = None
+        for listing in listings["data"]:
+            if self.symbol.upper() == listing["symbol"].upper():
+                coin_id = listing["id"]
+                break
+
+        self.logo_url = f"https://s2.coinmarketcap.com/static/img/coins/128x128/{coin_id}.png"
