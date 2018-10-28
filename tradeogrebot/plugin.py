@@ -128,7 +128,7 @@ class TradeOgreBotPlugin:
 
     @classmethod
     def trade_ogre_api_error(cls, response, update):
-        if response["success"]:
+        if "success" not in response or response["success"]:
             return False
 
         error_msg = f"{emo.ERROR} {response['error']}"
@@ -141,7 +141,7 @@ class TradeOgreBotPlugin:
         return True
 
     @staticmethod
-    def trim_zeros(value_to_trim, decimals=8):
+    def trm_zro(value_to_trim, decimals=8):
         if isinstance(value_to_trim, float):
             return (("%." + str(decimals) + "f") % value_to_trim).rstrip("0").rstrip(".")
         elif isinstance(value_to_trim, str):
