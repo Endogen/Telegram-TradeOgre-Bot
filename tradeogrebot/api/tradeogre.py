@@ -261,9 +261,10 @@ class TradeOgre(object):
             raise Exception('Either key or secret is not set! (Use `load_key()`.')
 
         if market is None:
-            market = ''
+            data = ''
+        else:
+            data = {"market": market}
 
-        data = {"market": market}
         self.response = requests.post(self.uri + '/account/orders', data=data, auth=(key, secret)).json()
         return self.response
 
