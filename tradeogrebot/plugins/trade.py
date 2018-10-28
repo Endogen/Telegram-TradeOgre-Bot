@@ -12,7 +12,9 @@ from telegram.ext.filters import Filters
 
 
 class Trade(TradeOgreBotPlugin):
-    
+
+    TRADING_FEE = 0.2001  # Percent
+
     # Conversation handler states
     TRADE_CHOOSE = auto()
     TRADE_BUY = auto()
@@ -72,7 +74,7 @@ class Trade(TradeOgreBotPlugin):
         if user_data["type"] == "buy":
             trade = TradeOgre().buy(
                 pair,
-                user_data["amount"],
+                user_data["qty"],
                 user_data["price"],
                 data.api_key,
                 data.api_secret)
@@ -187,9 +189,12 @@ class Trade(TradeOgreBotPlugin):
 
         return self.TRADE_AMOUNT
 
+    # TODO: Add possibility to not only choose percentage, but also enter amount of base currency
     @TradeOgreBotPlugin.send_typing_action
     def _trade_amount(self, bot, update, user_data):
         balance = float(user_data["balance"]["available"])
+        balance = balance - (balance / 100 * self.TRADING_FEE)
+
         percent = int(update.message.text[:-1])
 
         if balance == 0:
@@ -203,13 +208,13 @@ class Trade(TradeOgreBotPlugin):
         if user_data["type"] == "buy":
             user_data["amount"] = self.trm_zro((percent * balance) / 100.0)
             user_data["price"] = '{0:.8f}'.format(float(user_data["price"]))
-            amount_of_coins = float(user_data["amount"]) / float(user_data["price"])
-            amount_of_coins = self.trm_zro(amount_of_coins)
+            user_data["qty"] = float(user_data["amount"]) / float(user_data["price"])
+            user_data["qty"] = self.trm_zro(user_data["qty"])
 
             update.message.reply_text(
                 text=f"`"
                      f"{user_data['type']} "
-                     f"{amount_of_coins} "
+                     f"{user_data['qty']} "
                      f"{user_data['pair'][1]}\n@ "
                      f"{user_data['price']} "
                      f"{user_data['pair'][0]}?\n"
