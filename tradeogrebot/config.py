@@ -45,12 +45,16 @@ class ConfigManager:
             exit(f"ERROR: No configuration file '{cfg_file}' found")
 
     @staticmethod
-    def get(key):
+    def get(*args):
         if not ConfigManager._cfg:
             ConfigManager._read_cfg()
             ConfigManager._watch_changes()
 
-        return ConfigManager._cfg[key] if key in ConfigManager._cfg else None
+        value = ConfigManager._cfg
+        for key in args:
+            value = value[key]
+
+        return value if value is not None else None
 
 
 class ChangeHandler(FileSystemEventHandler):

@@ -18,8 +18,8 @@ class TelegramBot:
         self.db = bot_db
         self.token = bot_token
 
-        read_timeout = Cfg.get("tg_read_timeout")
-        connect_timeout = Cfg.get("tg_connect_timeout")
+        read_timeout = Cfg.get("telegram", "read_timeout")
+        connect_timeout = Cfg.get("telegram", "connect_timeout")
 
         kwargs = dict()
         if read_timeout:
@@ -50,12 +50,14 @@ class TelegramBot:
 
     def bot_start_webhook(self):
         self.updater.start_webhook(
-            listen=Cfg.get("wh_listen"),
-            port=Cfg.get("wh_port"),
+            listen=Cfg.get("webhook", "listen"),
+            port=Cfg.get("webhook", "port"),
             url_path=self.token,
-            key=Cfg.get("wh_privkey_path"),
-            cert=Cfg.get("wh_cert_path"),
-            webhook_url=f"{Cfg.get('wh_url')}:8443/{self.token}")
+            key=Cfg.get("webhook", "privkey_path"),
+            cert=Cfg.get("webhook", "cert_path"),
+            webhook_url=f"{Cfg.get('webhook', 'url')}:"
+                        f"{Cfg.get('webhook', 'port')}/"
+                        f"{self.token}")
 
     def load_plugins(self):
         for _, _, files in os.walk(os.path.join("tradeogrebot", "plugins")):

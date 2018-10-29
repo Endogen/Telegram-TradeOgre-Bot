@@ -8,7 +8,6 @@ from tradeogrebot.config import ConfigManager as Cfg
 from logging.handlers import TimedRotatingFileHandler
 
 
-# TODO: Make config file structured (add 'webhook' and 'telegram')
 # TODO: LICENSE & README
 # TODO: Manage requirements with 'pipenv'
 # See: https://github.com/dvf/blockchain
