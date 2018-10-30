@@ -8,7 +8,6 @@ from telegram.ext import MessageHandler, ConversationHandler, RegexHandler
 from telegram.ext.filters import Filters
 
 
-# TODO: Add another call to the ticker API via new thread to get info about EUR value
 class Settings(TradeOgreBotPlugin):
 
     # Conversation handler states
