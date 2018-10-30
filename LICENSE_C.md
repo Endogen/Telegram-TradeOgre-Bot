@@ -1,0 +1,1 @@
+If you intend to use the code commercially, you will have to get a license. Please get in contact with me at 081081@gmx.net for the details
