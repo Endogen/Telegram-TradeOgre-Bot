@@ -8,7 +8,7 @@ from tradeogrebot.config import ConfigManager as Cfg
 from logging.handlers import TimedRotatingFileHandler
 
 
-# TODO: LICENSE & README
+# TODO: Add license and author header into every file
 # See: https://github.com/dvf/blockchain
 # See: http://andrewsforge.com/article/python-new-package-landscape
 class TradeOgreBot:
