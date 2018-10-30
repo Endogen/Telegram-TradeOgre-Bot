@@ -1,5 +1,5 @@
 ✨ *Welcome to TradeOgre-Bot* ✨
-This description is just a very short version of the documentation you can find [here](https://github.com/Endogen/Telegram-TradeOgre-Bot).
+This description is just a very short version of the documentation you can find [here](https://endogen.github.io/Telegram-TradeOgre-Bot).
 
 🔹 *Support*
 If you want to talk to other users of the bot or need support, please post a message in the [support group](https://t.me/joinchat/B_84yxFeE4aPHKbP-n5_RA).
