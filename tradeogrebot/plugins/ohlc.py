@@ -48,6 +48,21 @@ class Ohlc(TradeOgreBotPlugin):
         fig = fif.create_candlestick(o, h, l, c, pd.to_datetime(t, unit='s'))
         fig['layout']['yaxis'].update(tickformat="0.4r")
         fig['layout'].update(title=f"Price of {to_sy} in {from_sy} for {days} days")
+        fig['layout'].update(
+            shapes=[{
+                "type": "line",
+                "xref": "paper",
+                "yref": "y",
+                "x0": 0,
+                "x1": 1,
+                "y0": c[len(c) - 1],
+                "y1": c[len(c) - 1],
+                "line": {
+                    "color": "rgb(50, 171, 96)",
+                    "width": 1,
+                    "dash": "dot"
+                }
+            }])
 
         update.message.reply_photo(
             photo=io.BufferedReader(BytesIO(pio.to_image(fig, format='webp'))),
