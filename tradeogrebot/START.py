@@ -9,7 +9,6 @@ from logging.handlers import TimedRotatingFileHandler
 
 
 # TODO: LICENSE & README
-# TODO: Manage requirements with 'pipenv'
 # See: https://github.com/dvf/blockchain
 # See: http://andrewsforge.com/article/python-new-package-landscape
 class TradeOgreBot:
