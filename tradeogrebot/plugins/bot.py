@@ -1,3 +1,4 @@
+import os
 import time
 import tradeogrebot.emoji as emo
 import tradeogrebot.labels as lbl
@@ -64,22 +65,13 @@ class Bot(TradeOgreBotPlugin):
 
         return self.BOT_CHOOSE
 
-    # TODO: Update this with proper info
     @TradeOgreBotPlugin.send_typing_action
     def _bot_help(self, bot, update):
-        help_msg = f"{emo.STARS} *Welcome to TradeOgre-Bot* {emo.STARS}\n" \
-                   f"This bot is open source. You can take a look at the " \
-                   f"source code [here](https://github.com/Endogen/Telegr" \
-                   f"am-TradeOgre-Bot) or drop me a message if you have a" \
-                   f"ny questions: @endogen\n\nThis description is just a" \
-                   f" very short version of the documentation you can fin" \
-                   f"d in the link above.\n\n{emo.BULLETPOINT} *Security*" \
-                   f"\nEvery data saved on our server is encrypted. If yo" \
-                   f"u choose to save your API keys on the sever, there i" \
-                   f"s no way for us to know that, or even read them.\n\n" \
+        with open(os.path.join("docs", "info.md"), 'r') as file:
+            content = file.readlines()
 
         update.message.reply_text(
-            text=help_msg,
+            text="".join(content),
             parse_mode=ParseMode.MARKDOWN,
             reply_markup=self.keyboard_main(),
             disable_web_page_preview=True)
