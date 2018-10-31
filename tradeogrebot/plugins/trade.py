@@ -9,11 +9,12 @@ from telegram import ParseMode, ReplyKeyboardMarkup, KeyboardButton, \
 from telegram.ext import MessageHandler, ConversationHandler, \
     RegexHandler, CallbackQueryHandler
 from telegram.ext.filters import Filters
+from tradeogrebot.config import ConfigManager as Cfg
 
 
 class Trade(TradeOgreBotPlugin):
 
-    TRADING_FEE = 0.2001  # Percent
+    FEE_ADD = 0.0001  # Percent
 
     # Conversation handler states
     TRADE_CHOOSE = auto()
@@ -193,7 +194,7 @@ class Trade(TradeOgreBotPlugin):
     @TradeOgreBotPlugin.send_typing_action
     def _trade_amount(self, bot, update, user_data):
         balance = float(user_data["balance"]["available"])
-        balance = balance - (balance / 100 * self.TRADING_FEE)
+        balance = balance - (balance / 100 * (Cfg.get("trading_fee") + self.FEE_ADD))
 
         percent = int(update.message.text[:-1])
 

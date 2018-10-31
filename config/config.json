@@ -11,5 +11,6 @@
         "cert_path": "/path/to/cert.pem",
         "url": "https://somedomain.com"
     },
-    "update_slug": "endogen/Telegram-TradeOgre-Bot/master"
+    "update_slug": "endogen/Telegram-TradeOgre-Bot/master",
+    "trading_fee": 0.2
 }
