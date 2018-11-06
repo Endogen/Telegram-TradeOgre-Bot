@@ -14,7 +14,6 @@ from tradeogrebot.plugin import TradeOgreBotPlugin
 from tradeogrebot.api.cryptocompare import CryptoCompare
 
 
-# TODO: Add all the cool features from 'chart'
 class Ohlc(TradeOgreBotPlugin):
 
     # Default time frame
@@ -60,7 +59,7 @@ class Ohlc(TradeOgreBotPlugin):
 
         fig = fif.create_candlestick(o, h, l, c, pd.to_datetime(t, unit='s'))
         fig['layout']['yaxis'].update(tickformat="0.8f", ticksuffix="  ")
-        fig['layout'].update(title=f"Price of {to_sy} in {from_sy}")
+        fig['layout'].update(title=f"{from_sy} - {to_sy}")
         fig['layout'].update(
             shapes=[{
                 "type": "line",

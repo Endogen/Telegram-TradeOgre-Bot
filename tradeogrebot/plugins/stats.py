@@ -3,7 +3,7 @@ import tradeogrebot.labels as lbl
 
 from coinmarketcap import Market
 from telegram import ParseMode
-from telegram.ext import RegexHandler
+from telegram.ext import RegexHandler, CommandHandler
 from tradeogrebot.plugin import TradeOgreBotPlugin
 
 
@@ -14,7 +14,10 @@ class Stats(TradeOgreBotPlugin):
     data_eur = ""
 
     def get_handlers(self):
-        return [self._get_stats_handler()]
+        return [self._get_stats_handler(), self._get_cmd_handler()]
+
+    def _get_cmd_handler(self):
+        return CommandHandler("stats", self._stats)
 
     def _get_stats_handler(self):
         return RegexHandler(f"^({lbl.BTN_STATS})$", self._stats)

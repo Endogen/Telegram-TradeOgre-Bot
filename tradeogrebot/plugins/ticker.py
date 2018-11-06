@@ -1,7 +1,7 @@
 import tradeogrebot.labels as lbl
 
 from telegram import ParseMode
-from telegram.ext import RegexHandler
+from telegram.ext import RegexHandler, CommandHandler
 from tradeogrebot.api.tradeogre import TradeOgre
 from tradeogrebot.plugin import TradeOgreBotPlugin
 
@@ -9,7 +9,10 @@ from tradeogrebot.plugin import TradeOgreBotPlugin
 class Ticker(TradeOgreBotPlugin):
 
     def get_handlers(self):
-        return [self._get_ticker_handler()]
+        return [self._get_ticker_handler(), self._get_cmd_handler()]
+
+    def _get_cmd_handler(self):
+        return CommandHandler("ticker", self._ticker)
 
     def _get_ticker_handler(self):
         return RegexHandler(f"^({lbl.BTN_TICKER})$", self._ticker)

@@ -4,13 +4,18 @@ import tradeogrebot.labels as lbl
 from tradeogrebot.api.tradeogre import TradeOgre
 from tradeogrebot.plugin import TradeOgreBotPlugin
 from telegram import ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import RegexHandler, CallbackQueryHandler
+from telegram.ext import RegexHandler, CallbackQueryHandler, CommandHandler
 
 
 class Orders(TradeOgreBotPlugin):
 
     def get_handlers(self):
-        return [self._get_orders_handler(), self._get_orders_callback_handler()]
+        return [self._get_orders_handler(),
+                self._get_orders_callback_handler(),
+                self._get_cmd_handler()]
+
+    def _get_cmd_handler(self):
+        return CommandHandler("orders", self._orders)
 
     def _get_orders_handler(self):
         return RegexHandler(f"^({lbl.BTN_ORDERS})$", self._orders)

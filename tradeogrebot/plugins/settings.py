@@ -77,7 +77,6 @@ class Settings(TradeOgreBotPlugin):
 
         return self.SETTINGS_PAIR
 
-    # TODO: Make sure that answer exists as button
     @TradeOgreBotPlugin.send_typing_action
     def _settings_pair_save(self, bot, update):
         user_id = update.message.from_user.id

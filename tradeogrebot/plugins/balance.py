@@ -1,7 +1,7 @@
 import tradeogrebot.labels as lbl
 
 from telegram import ParseMode
-from telegram.ext import RegexHandler
+from telegram.ext import RegexHandler, CommandHandler
 from tradeogrebot.api.tradeogre import TradeOgre
 from tradeogrebot.plugin import TradeOgreBotPlugin
 
@@ -9,7 +9,10 @@ from tradeogrebot.plugin import TradeOgreBotPlugin
 class Balance(TradeOgreBotPlugin):
 
     def get_handlers(self):
-        return [self._get_balance_handler()]
+        return [self._get_balance_handler(), self._get_cmd_handler()]
+
+    def _get_cmd_handler(self):
+        return CommandHandler("balance", self._balance)
 
     def _get_balance_handler(self):
         return RegexHandler(f"^({lbl.BTN_BALANCE})$", self._balance)

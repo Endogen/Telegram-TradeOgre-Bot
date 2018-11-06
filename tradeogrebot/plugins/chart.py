@@ -10,7 +10,7 @@ from io import BytesIO
 from pandas import DataFrame
 from coinmarketcap import Market
 from telegram import ParseMode
-from telegram.ext import RegexHandler
+from telegram.ext import RegexHandler, CommandHandler
 from tradeogrebot.api.coingecko import CoinGecko
 from tradeogrebot.plugin import TradeOgreBotPlugin
 
@@ -25,7 +25,10 @@ class Chart(TradeOgreBotPlugin):
     symbol = str()
 
     def get_handlers(self):
-        return [self._get_chart_handler()]
+        return [self._get_chart_handler(), self._get_cmd_handler()]
+
+    def _get_cmd_handler(self):
+        return CommandHandler("chart", self._chart)
 
     def _get_chart_handler(self):
         return RegexHandler(f"^({lbl.BTN_CHART})$", self._chart)
@@ -96,7 +99,7 @@ class Chart(TradeOgreBotPlugin):
             ),
             yaxis=dict(domain=[0, 0.20], ticksuffix="  "),
             yaxis2=dict(domain=[0.25, 1], ticksuffix="  "),
-            title=f"Price of {to_cur} in {vs_cur.upper()} for {days} days",
+            title=f"{vs_cur.upper()} - {to_cur}",
             legend=dict(orientation="h", yanchor="top", xanchor="center", y=1.05, x=0.5),
             shapes=[{
                 "type": "line",
