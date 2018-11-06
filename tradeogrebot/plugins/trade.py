@@ -40,11 +40,8 @@ class Trade(TradeOgreBotPlugin):
                     [RegexHandler(f"^({lbl.BTN_BACK})$", self.back),
                      MessageHandler(Filters.text, self._trade_price, pass_user_data=True)],
                 self.TRADE_AMOUNT:
-                    [RegexHandler(f"^({lbl.BTN_25})$", self._trade_amount, pass_user_data=True),
-                     RegexHandler(f"^({lbl.BTN_50})$", self._trade_amount, pass_user_data=True),
-                     RegexHandler(f"^({lbl.BTN_75})$", self._trade_amount, pass_user_data=True),
-                     RegexHandler(f"^({lbl.BTN_100})$", self._trade_amount, pass_user_data=True),
-                     RegexHandler(f"^({lbl.BTN_BACK})$", self.back)]
+                    [RegexHandler(f"^({lbl.BTN_BACK})$", self.back),
+                     MessageHandler(Filters.text, self._trade_amount, pass_user_data=True)]
             },
             fallbacks=[MessageHandler(Filters.text, self.back)],
             allow_reentry=True)
@@ -190,13 +187,10 @@ class Trade(TradeOgreBotPlugin):
 
         return self.TRADE_AMOUNT
 
-    # TODO: Add possibility to not only choose percentage, but also enter amount of base currency
     @TradeOgreBotPlugin.send_typing_action
     def _trade_amount(self, bot, update, user_data):
         balance = float(user_data["balance"]["available"])
         balance = balance - (balance / 100 * (Cfg.get("trading_fee") + self.FEE_ADD))
-
-        percent = int(update.message.text[:-1])
 
         if balance == 0:
             update.message.reply_text(
@@ -207,7 +201,12 @@ class Trade(TradeOgreBotPlugin):
             return ConversationHandler.END
 
         if user_data["type"] == "buy":
-            user_data["amount"] = self.trm_zro((percent * balance) / 100.0)
+            if update.message.text.endswith("%"):
+                percent = int(update.message.text[:-1])
+                user_data["amount"] = self.trm_zro((percent * balance) / 100.0)
+            else:
+                user_data["amount"] = update.message.text
+
             user_data["price"] = '{0:.8f}'.format(float(user_data["price"]))
             user_data["qty"] = float(user_data["amount"]) / float(user_data["price"])
             user_data["qty"] = self.trm_zro(user_data["qty"])
@@ -225,7 +224,12 @@ class Trade(TradeOgreBotPlugin):
                 reply_markup=self._keyboard_trade_confirm())
 
         elif user_data["type"] == "sell":
-            user_data["amount"] = self.trm_zro((percent * balance) / 100.0)
+            if update.message.text.endswith("%"):
+                percent = int(update.message.text[:-1])
+                user_data["amount"] = self.trm_zro((percent * balance) / 100.0)
+            else:
+                user_data["amount"] = update.message.text
+
             user_data["price"] = '{0:.8f}'.format(float(user_data["price"]))
             value = float(user_data["amount"]) * float(user_data["price"])
             value = self.trm_zro(value)
