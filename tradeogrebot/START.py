@@ -9,8 +9,6 @@ from logging.handlers import TimedRotatingFileHandler
 
 
 # TODO: Add config auto-reload
-# See: https://github.com/dvf/blockchain
-# See: http://andrewsforge.com/article/python-new-package-landscape
 class TradeOgreBot:
 
     def __init__(self):
