@@ -59,6 +59,7 @@ class TelegramBot:
                         f"{Cfg.get('webhook', 'port')}/"
                         f"{self.token}")
 
+    # FIXME: `back` plugin has to be added as the last one
     def load_plugins(self):
         for _, _, files in os.walk(os.path.join("tradeogrebot", "plugins")):
             for file in files:

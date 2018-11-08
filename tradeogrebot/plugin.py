@@ -54,7 +54,7 @@ class TradeOgreBotPlugin:
             if not kwargs["data"].pair:
                 update.message.reply_text(
                     text=f"Set your *trading pair* first with\n"
-                         f"{lbl.BTN_SETTINGS} `-->` {lbl.BTN_PAIR}",
+                         f"{lbl.SETTINGS} `-->` {lbl.PAIR}",
                     parse_mode=ParseMode.MARKDOWN,
                     reply_markup=self.keyboard_main())
 
@@ -74,7 +74,7 @@ class TradeOgreBotPlugin:
             if not kwargs["data"].api_key or not kwargs["data"].api_secret:
                 update.message.reply_text(
                     text=f"Set your *API keys* first with\n"
-                         f"{lbl.BTN_SETTINGS} `-->` {lbl.BTN_API_KEYS}",
+                         f"{lbl.SETTINGS} `-->` {lbl.API_KEYS}",
                     parse_mode=ParseMode.MARKDOWN,
                     reply_markup=self.keyboard_main())
 
@@ -105,15 +105,15 @@ class TradeOgreBotPlugin:
     @classmethod
     def keyboard_main(cls):
         buttons = [
-            KeyboardButton(lbl.BTN_TRADE),
-            KeyboardButton(lbl.BTN_BALANCE),
-            KeyboardButton(lbl.BTN_ORDERS),
-            KeyboardButton(lbl.BTN_TICKER),
-            KeyboardButton(lbl.BTN_TRADES),
-            KeyboardButton(lbl.BTN_CHART),
-            KeyboardButton(lbl.BTN_STATS),
-            KeyboardButton(lbl.BTN_SETTINGS),
-            KeyboardButton(lbl.BTN_BOT)
+            KeyboardButton(lbl.TRADE),
+            KeyboardButton(lbl.BALANCE),
+            KeyboardButton(lbl.ORDERS),
+            KeyboardButton(lbl.TICKER),
+            KeyboardButton(lbl.TRADES),
+            KeyboardButton(lbl.CHART),
+            KeyboardButton(lbl.STATS),
+            KeyboardButton(lbl.SETTINGS),
+            KeyboardButton(lbl.BOT)
         ]
 
         return ReplyKeyboardMarkup(cls.build_menu(buttons, n_cols=3), resize_keyboard=True)
@@ -121,7 +121,7 @@ class TradeOgreBotPlugin:
     @classmethod
     def keyboard_back(cls):
         buttons = [
-            KeyboardButton(lbl.BTN_BACK)
+            KeyboardButton(lbl.BACK)
         ]
 
         return ReplyKeyboardMarkup(cls.build_menu(buttons), resize_keyboard=True)

@@ -20,7 +20,7 @@ class Stats(TradeOgreBotPlugin):
         return CommandHandler("stats", self._stats)
 
     def _get_stats_handler(self):
-        return RegexHandler(f"^({lbl.BTN_STATS})$", self._stats)
+        return RegexHandler(f"^({lbl.STATS})$", self._stats)
 
     @TradeOgreBotPlugin.add_user
     @TradeOgreBotPlugin.check_pair

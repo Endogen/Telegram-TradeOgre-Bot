@@ -18,7 +18,7 @@ class Orders(TradeOgreBotPlugin):
         return CommandHandler("orders", self._orders)
 
     def _get_orders_handler(self):
-        return RegexHandler(f"^({lbl.BTN_ORDERS})$", self._orders)
+        return RegexHandler(f"^({lbl.ORDERS})$", self._orders)
 
     def _get_orders_callback_handler(self):
         regex = "^[a-z0-9]{8}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{4}[-][a-z0-9]{12}$"

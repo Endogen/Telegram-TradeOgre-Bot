@@ -1,6 +1,6 @@
 import tradeogrebot.labels as lbl
 
-from telegram.ext import RegexHandler, CommandHandler
+from telegram.ext import RegexHandler
 from tradeogrebot.plugin import TradeOgreBotPlugin
 
 
@@ -10,4 +10,4 @@ class Back(TradeOgreBotPlugin):
         return [self._get_back_handler()]
 
     def _get_back_handler(self):
-        return RegexHandler(f"^({lbl.BTN_BACK})$", self.back)
+        return RegexHandler(f"^({lbl.BACK})$", self.back)

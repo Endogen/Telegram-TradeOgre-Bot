@@ -31,7 +31,7 @@ class Chart(TradeOgreBotPlugin):
         return CommandHandler("chart", self._chart)
 
     def _get_chart_handler(self):
-        return RegexHandler(f"^({lbl.BTN_CHART})$", self._chart)
+        return RegexHandler(f"^({lbl.CHART})$", self._chart)
 
     @TradeOgreBotPlugin.add_user
     @TradeOgreBotPlugin.check_pair

@@ -22,11 +22,11 @@ class History(TradeOgreBotPlugin):
 
     def _get_history_handler(self):
         return ConversationHandler(
-            entry_points=[RegexHandler(f"^({lbl.BTN_TRADES})$", self._trades)],
+            entry_points=[RegexHandler(f"^({lbl.TRADES})$", self._trades)],
             states={
                 self.TRADES_NEXT:
-                    [RegexHandler(f"^({lbl.BTN_NEXT})$", self._trades_next),
-                     RegexHandler(f"^({lbl.BTN_BACK})$", self.back)]
+                    [RegexHandler(f"^({lbl.NEXT})$", self._trades_next),
+                     RegexHandler(f"^({lbl.BACK})$", self.back)]
             },
             fallbacks=[MessageHandler(Filters.text, self.back)],
             allow_reentry=True)
@@ -72,8 +72,8 @@ class History(TradeOgreBotPlugin):
 
     def _keyboard_trades(self):
         buttons = [
-            KeyboardButton(lbl.BTN_NEXT),
-            KeyboardButton(lbl.BTN_BACK)
+            KeyboardButton(lbl.NEXT),
+            KeyboardButton(lbl.BACK)
         ]
 
         return ReplyKeyboardMarkup(

@@ -15,7 +15,7 @@ class Balance(TradeOgreBotPlugin):
         return CommandHandler("balance", self._balance)
 
     def _get_balance_handler(self):
-        return RegexHandler(f"^({lbl.BTN_BALANCE})$", self._balance)
+        return RegexHandler(f"^({lbl.BALANCE})$", self._balance)
 
     @TradeOgreBotPlugin.add_user
     @TradeOgreBotPlugin.check_keys

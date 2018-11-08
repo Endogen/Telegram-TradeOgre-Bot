@@ -15,7 +15,7 @@ class Ticker(TradeOgreBotPlugin):
         return CommandHandler("ticker", self._ticker)
 
     def _get_ticker_handler(self):
-        return RegexHandler(f"^({lbl.BTN_TICKER})$", self._ticker)
+        return RegexHandler(f"^({lbl.TICKER})$", self._ticker)
 
     @TradeOgreBotPlugin.add_user
     @TradeOgreBotPlugin.check_pair

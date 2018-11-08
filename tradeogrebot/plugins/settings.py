@@ -21,20 +21,20 @@ class Settings(TradeOgreBotPlugin):
 
     def _get_settings_handler(self):
         return ConversationHandler(
-            entry_points=[RegexHandler(f"^({lbl.BTN_SETTINGS})$", self._settings)],
+            entry_points=[RegexHandler(f"^({lbl.SETTINGS})$", self._settings)],
             states={
                 self.SETTINGS_CHOOSE:
-                    [RegexHandler(f"^({lbl.BTN_PAIR})$", self._settings_pair),
-                     RegexHandler(f"^({lbl.BTN_API_KEYS})$", self._settings_keys),
-                     RegexHandler(f"^({lbl.BTN_BACK})$", self.back)],
+                    [RegexHandler(f"^({lbl.PAIR})$", self._settings_pair),
+                     RegexHandler(f"^({lbl.API_KEYS})$", self._settings_keys),
+                     RegexHandler(f"^({lbl.BACK})$", self.back)],
                 self.SETTINGS_PAIR:
-                    [RegexHandler(f"^({lbl.BTN_BACK})$", self.back),
+                    [RegexHandler(f"^({lbl.BACK})$", self.back),
                      MessageHandler(Filters.text, self._settings_pair_save)],
                 self.SETTINGS_KEY:
-                    [RegexHandler(f"^({lbl.BTN_BACK})$", self.back),
+                    [RegexHandler(f"^({lbl.BACK})$", self.back),
                      MessageHandler(Filters.text, self._settings_key_save, pass_user_data=True)],
                 self.SETTINGS_SECRET:
-                    [RegexHandler(f"^({lbl.BTN_BACK})$", self.back),
+                    [RegexHandler(f"^({lbl.BACK})$", self.back),
                      MessageHandler(Filters.text, self._settings_secret_save, pass_user_data=True)]
             },
             fallbacks=[MessageHandler(Filters.text, self.back)],
@@ -128,9 +128,9 @@ class Settings(TradeOgreBotPlugin):
 
     def _keyboard_settings(self):
         buttons = [
-            KeyboardButton(lbl.BTN_PAIR),
-            KeyboardButton(lbl.BTN_API_KEYS),
-            KeyboardButton(lbl.BTN_BACK)
+            KeyboardButton(lbl.PAIR),
+            KeyboardButton(lbl.API_KEYS),
+            KeyboardButton(lbl.BACK)
         ]
 
         return ReplyKeyboardMarkup(self.build_menu(buttons, n_cols=2), resize_keyboard=True)
@@ -138,7 +138,7 @@ class Settings(TradeOgreBotPlugin):
     def _keyboard_pairs(self, pairs):
         if pairs:
             return ReplyKeyboardMarkup(
-                self.build_menu(pairs, n_cols=3, footer_buttons=[KeyboardButton(lbl.BTN_BACK)]),
+                self.build_menu(pairs, n_cols=3, footer_buttons=[KeyboardButton(lbl.BACK)]),
                 resize_keyboard=True)
         else:
             return None

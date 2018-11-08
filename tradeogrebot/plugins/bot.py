@@ -28,16 +28,16 @@ class Bot(TradeOgreBotPlugin):
 
     def _get_bot_handler(self):
         return ConversationHandler(
-            entry_points=[RegexHandler(f"^({lbl.BTN_BOT})$", self._bot)],
+            entry_points=[RegexHandler(f"^({lbl.BOT})$", self._bot)],
             states={
                 self.BOT_CHOOSE:
-                    [RegexHandler(f"^({lbl.BTN_HELP})$", self._bot_help),
-                     RegexHandler(f"^({lbl.BTN_SHUTDOWN})$", self._bot_shutdown),
-                     RegexHandler(f"^({lbl.BTN_REMOVE_AC})$", self._bot_remove_account),
-                     RegexHandler(f"^({lbl.BTN_FEEDBACK})$", self._bot_feedback),
-                     RegexHandler(f"^({lbl.BTN_BACK})$", self.back)],
+                    [RegexHandler(f"^({lbl.HELP})$", self._bot_help),
+                     RegexHandler(f"^({lbl.SHUTDOWN})$", self._bot_shutdown),
+                     RegexHandler(f"^({lbl.REMOVE_AC})$", self._bot_remove_account),
+                     RegexHandler(f"^({lbl.FEEDBACK})$", self._bot_feedback),
+                     RegexHandler(f"^({lbl.BACK})$", self.back)],
                 self.BOT_FEEDBACK:
-                    [RegexHandler(f"^({lbl.BTN_BACK})$", self.back),
+                    [RegexHandler(f"^({lbl.BACK})$", self.back),
                      MessageHandler(Filters.text, self._bot_feedback_save)]
             },
             fallbacks=[MessageHandler(Filters.text, self.back)],
@@ -158,16 +158,16 @@ class Bot(TradeOgreBotPlugin):
 
     def _keyboard_bot(self, update):
         buttons = [
-            KeyboardButton(lbl.BTN_FEEDBACK),
-            KeyboardButton(lbl.BTN_HELP),
-            KeyboardButton(lbl.BTN_REMOVE_AC)
+            KeyboardButton(lbl.FEEDBACK),
+            KeyboardButton(lbl.HELP),
+            KeyboardButton(lbl.REMOVE_AC)
         ]
 
         if update.message.from_user.id == Cfg.get("admin_id"):
-            buttons.append(KeyboardButton(lbl.BTN_SHUTDOWN))
+            buttons.append(KeyboardButton(lbl.SHUTDOWN))
 
         return ReplyKeyboardMarkup(
-            self.build_menu(buttons, n_cols=2, footer_buttons=[KeyboardButton(lbl.BTN_BACK)]),
+            self.build_menu(buttons, n_cols=2, footer_buttons=[KeyboardButton(lbl.BACK)]),
             resize_keyboard=True)
 
     def _keyboard_remove_ac_confirm(self):

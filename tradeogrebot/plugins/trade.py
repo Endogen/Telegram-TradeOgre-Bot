@@ -30,17 +30,17 @@ class Trade(TradeOgreBotPlugin):
 
     def _get_trade_handler(self):
         return ConversationHandler(
-            entry_points=[RegexHandler(f"^({lbl.BTN_TRADE})$", self._trade, pass_user_data=True)],
+            entry_points=[RegexHandler(f"^({lbl.TRADE})$", self._trade, pass_user_data=True)],
             states={
                 self.TRADE_CHOOSE:
-                    [RegexHandler(f"^({lbl.BTN_BUY})$", self._trade_buy, pass_user_data=True),
-                     RegexHandler(f"^({lbl.BTN_SELL})$", self._trade_sell, pass_user_data=True),
-                     RegexHandler(f"^({lbl.BTN_BACK})$", self.back)],
+                    [RegexHandler(f"^({lbl.BUY})$", self._trade_buy, pass_user_data=True),
+                     RegexHandler(f"^({lbl.SELL})$", self._trade_sell, pass_user_data=True),
+                     RegexHandler(f"^({lbl.BACK})$", self.back)],
                 self.TRADE_PRICE:
-                    [RegexHandler(f"^({lbl.BTN_BACK})$", self.back),
+                    [RegexHandler(f"^({lbl.BACK})$", self.back),
                      MessageHandler(Filters.text, self._trade_price, pass_user_data=True)],
                 self.TRADE_AMOUNT:
-                    [RegexHandler(f"^({lbl.BTN_BACK})$", self.back),
+                    [RegexHandler(f"^({lbl.BACK})$", self.back),
                      MessageHandler(Filters.text, self._trade_amount, pass_user_data=True)]
             },
             fallbacks=[MessageHandler(Filters.text, self.back)],
@@ -255,22 +255,22 @@ class Trade(TradeOgreBotPlugin):
 
     def _keyboard_trade(self):
         buttons = [
-            KeyboardButton(lbl.BTN_BUY),
-            KeyboardButton(lbl.BTN_SELL)
+            KeyboardButton(lbl.BUY),
+            KeyboardButton(lbl.SELL)
         ]
 
         return ReplyKeyboardMarkup(
-            self.build_menu(buttons, n_cols=2, footer_buttons=[KeyboardButton(lbl.BTN_BACK)]),
+            self.build_menu(buttons, n_cols=2, footer_buttons=[KeyboardButton(lbl.BACK)]),
             resize_keyboard=True)
 
     def _keyboard_amount(self):
         buttons = [
-            KeyboardButton(lbl.BTN_25),
-            KeyboardButton(lbl.BTN_50),
-            KeyboardButton(lbl.BTN_75),
-            KeyboardButton(lbl.BTN_100),
+            KeyboardButton(lbl.P25),
+            KeyboardButton(lbl.P50),
+            KeyboardButton(lbl.P75),
+            KeyboardButton(lbl.P100),
         ]
 
         return ReplyKeyboardMarkup(
-            self.build_menu(buttons, n_cols=4, footer_buttons=[KeyboardButton(lbl.BTN_BACK)]),
+            self.build_menu(buttons, n_cols=4, footer_buttons=[KeyboardButton(lbl.BACK)]),
             resize_keyboard=True)
