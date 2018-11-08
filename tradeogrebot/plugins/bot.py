@@ -67,7 +67,7 @@ class Bot(TradeOgreBotPlugin):
 
     @TradeOgreBotPlugin.send_typing_action
     def _bot_help(self, bot, update):
-        with open(os.path.join("docs", "info.md"), 'r') as file:
+        with open(os.path.join("docs", "info.md"), 'r', encoding="utf8") as file:
             content = file.readlines()
 
         update.message.reply_text(
