@@ -3,6 +3,7 @@ import tradeogrebot.labels as lbl
 import tradeogrebot.emoji as emo
 
 from typing import List
+from enum import IntEnum, auto
 from telegram.ext import Handler, ConversationHandler
 from telegram import ParseMode, ReplyKeyboardMarkup, KeyboardButton, ChatAction
 
@@ -158,3 +159,12 @@ class TradeOgreBotPlugin:
     def get_handlers(self) -> List[Handler]:
         method = inspect.currentframe().f_code.co_name
         raise NotImplementedError(f"Interface method '{method}' not implemented")
+
+    def get_sequence(self):
+        return Sequence.NORMAL
+
+
+class Sequence(IntEnum):
+    FIRST = auto()
+    NORMAL = auto()
+    LAST = auto()

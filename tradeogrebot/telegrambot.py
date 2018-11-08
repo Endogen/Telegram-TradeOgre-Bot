@@ -6,6 +6,7 @@ import tradeogrebot.emoji as emo
 from telegram import ParseMode
 from telegram.ext import Updater
 from telegram.error import InvalidToken
+from tradeogrebot.plugin import Sequence
 from tradeogrebot.plugin import TradeOgreBotPlugin
 from tradeogrebot.config import ConfigManager as Cfg
 
@@ -59,30 +60,37 @@ class TelegramBot:
                         f"{Cfg.get('webhook', 'port')}/"
                         f"{self.token}")
 
-    # FIXME: `back` plugin has to be added as the last one
     def load_plugins(self):
         for _, _, files in os.walk(os.path.join("tradeogrebot", "plugins")):
-            for file in files:
-                if not file.lower().endswith(".py"):
-                    continue
-                if file.startswith("_"):
-                    continue
+            plgns = [list() for seq in Sequence]
 
-                module_name = file[:-3]
-                module_path = f"tradeogrebot.plugins.{module_name}"
+            try:
+                for file in files:
+                    if not file.lower().endswith(".py"):
+                        continue
+                    if file.startswith("_"):
+                        continue
 
-                try:
+                    module_name = file[:-3]
+                    module_path = f"tradeogrebot.plugins.{module_name}"
+
                     module = importlib.import_module(module_path)
                     plugin_class = getattr(module, module_name.capitalize())
-                    instance = plugin_class(self.updater, self.db)
+                    inst = plugin_class(self.updater, self.db)
 
-                    if isinstance(instance, TradeOgreBotPlugin):
-                        for handler in instance.get_handlers():
+                    if isinstance(inst, TradeOgreBotPlugin):
+                        plgns[inst.get_sequence().value - 1].append(inst)
+
+                for lst in plgns:
+                    for plgn in lst:
+                        for handler in plgn.get_handlers():
                             self.dispatcher.add_handler(handler)
-                        logging.info(f"Plugin '{module_name}' added")
-                except Exception as ex:
-                    msg = f"File '{file}' can't be loaded as a plugin: {ex}"
-                    logging.warning(msg)
+
+                        logging.info(f"Plugin '{type(plgn).__name__}' added")
+
+            except Exception as ex:
+                msg = f"File '{file}' can't be loaded as a plugin: {ex}"
+                logging.warning(msg)
 
     # Handle all telegram and telegram.ext related errors
     def handle_telegram_error(self, bot, update, error):
