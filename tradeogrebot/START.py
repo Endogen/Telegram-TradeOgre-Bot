@@ -10,11 +10,23 @@ from logging.handlers import TimedRotatingFileHandler
 
 class TradeOgreBot:
 
+    _CFG_DIR = "conf"
+    _CFG_FILE = "config.json"
+    _TOK_FILE = "bot.token"
+
+    _LOG_DIR = "log"
+    _LOG_FILE = "tradeogrebot.log"
+
+    _DAT_DIR = "data"
+    _DAT_FILE = "tradeogrebot.db"
+
+    _SQL_DIR = "sql"
+
     def __init__(self):
         # Parse command line arguments
         self.args = self._parse_args()
 
-        # Load config file
+        # Load conf file
         Cfg(self.args.config)
 
         # Set up logging
@@ -23,17 +35,12 @@ class TradeOgreBot:
         self._init_logger(log_path, log_level)
 
         # Prepare database
-        sql_path = "sql"
+        sql_dir = self._SQL_DIR
         db_path = self.args.database
         password = input("Enter DB password: ")
 
-        # Create 'data' directory if not present
-        data_path = os.path.dirname(db_path)
-        if not os.path.exists(data_path):
-            os.makedirs(data_path)
-
         # Create database
-        self.db = Database(password, db_path, sql_path)
+        self.db = Database(password, db_path, sql_dir)
 
         # Create bot
         bot_token = self._get_bot_token()
@@ -47,8 +54,8 @@ class TradeOgreBot:
         parser.add_argument(
             "-cfg",
             dest="config",
-            help="path to config file",
-            default="config/config.json",
+            help="path to conf file",
+            default=os.path.join(self._CFG_DIR, self._CFG_FILE),
             required=False,
             metavar="FILE")
 
@@ -66,7 +73,7 @@ class TradeOgreBot:
             "-log",
             dest="logfile",
             help="path to logfile",
-            default="log/tradeogrebot.log",
+            default=os.path.join(self._LOG_DIR, self._LOG_FILE),
             required=False,
             metavar="FILE")
 
@@ -85,7 +92,7 @@ class TradeOgreBot:
             "-db",
             dest="database",
             help="path to SQLite database file",
-            default="data/data.db",
+            default=os.path.join(self._DAT_DIR, self._DAT_FILE),
             required=False,
             metavar="FILE")
 
@@ -144,12 +151,13 @@ class TradeOgreBot:
         if self.args.token:
             return self.args.token
 
-        token_path = "config/bot.token"
+        token_path = os.path.join(self._CFG_DIR, self._TOK_FILE)
+
         if os.path.isfile(token_path):
             with open(token_path, 'r') as file:
                 return file.read().splitlines()[0]
         else:
-            exit(f"ERROR: No token file '{token_path}' found")
+            exit(f"ERROR: No token file found at '{token_path}'")
 
     def start(self):
         if self.args.webhook:

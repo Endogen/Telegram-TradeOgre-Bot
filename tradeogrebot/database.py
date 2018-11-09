@@ -10,6 +10,11 @@ class Database:
         self._db_path = db_path
         self._password = password
 
+        # Create 'data' directory if not present
+        data_dir = os.path.dirname(db_path)
+        if not os.path.exists(data_dir):
+            os.makedirs(data_dir)
+
         con = sqlite3.connect(db_path)
         cur = con.cursor()
 
