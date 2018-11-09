@@ -8,7 +8,6 @@ from tradeogrebot.config import ConfigManager as Cfg
 from logging.handlers import TimedRotatingFileHandler
 
 
-# TODO: Add config auto-reload
 class TradeOgreBot:
 
     def __init__(self):

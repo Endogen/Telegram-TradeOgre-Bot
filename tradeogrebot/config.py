@@ -14,6 +14,8 @@ class ConfigManager:
         if config_file:
             ConfigManager._CFG_FILE = config_file
 
+        ConfigManager._watch_changes()
+
     # Watch for config file changes
     @staticmethod
     def _watch_changes():
@@ -48,7 +50,6 @@ class ConfigManager:
     def get(*args):
         if not ConfigManager._cfg:
             ConfigManager._read_cfg()
-            ConfigManager._watch_changes()
 
         value = ConfigManager._cfg
         for key in args:
@@ -67,5 +68,7 @@ class ChangeHandler(FileSystemEventHandler):
 
     @staticmethod
     def on_modified(event):
-        if os.path.basename(event.src_path).endswith(ChangeHandler.file):
+        event_file = os.path.basename(event.src_path)
+        config_file = os.path.basename(ChangeHandler.file)
+        if event_file == config_file:
             ChangeHandler.method()
