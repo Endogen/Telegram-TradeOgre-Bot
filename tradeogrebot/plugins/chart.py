@@ -4,6 +4,7 @@ import plotly.io as pio
 import plotly.graph_objs as go
 import tradeogrebot.emoji as emo
 import tradeogrebot.labels as lbl
+import tradeogrebot.constants as con
 
 from io import BytesIO
 from pandas import DataFrame
@@ -18,9 +19,6 @@ class Chart(TradeOgreBotPlugin):
     # Button label
     BTN_CHART = f"{emo.CHART} Chart"
     TIME_FRAME = 72  # Hours
-
-    # Partial URL for coin logo
-    LOGO_URL_PARTIAL = "https://s2.coinmarketcap.com/static/img/coins/128x128/"
 
     def get_handlers(self):
         return [self._get_chart_handler(), self._get_cmd_handler()]
@@ -73,7 +71,7 @@ class Chart(TradeOgreBotPlugin):
 
         layout = go.Layout(
             images=[dict(
-                source=f"{self.LOGO_URL_PARTIAL}{data.cmc_coin_id}.png",
+                source=f"{con.LOGO_URL_PARTIAL}{data.cmc_coin_id}.png",
                 opacity=0.8,
                 xref="paper", yref="paper",
                 x=1.05, y=1,

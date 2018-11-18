@@ -4,6 +4,7 @@ import plotly.io as pio
 import plotly.graph_objs as go
 import tradeogrebot.emoji as emo
 import plotly.figure_factory as fif
+import tradeogrebot.constants as con
 
 from io import BytesIO
 from telegram import ParseMode
@@ -16,9 +17,6 @@ class Ohlc(TradeOgreBotPlugin):
 
     # Default time frame
     TIME_FRAME = 120  # Hours
-
-    # Partial URL for coin logo
-    LOGO_URL_PARTIAL = "https://s2.coinmarketcap.com/static/img/coins/128x128/"
 
     def get_handlers(self):
         return [self._get_ohlc_handler()]
@@ -81,7 +79,7 @@ class Ohlc(TradeOgreBotPlugin):
             ))
         fig['layout'].update(
             images=[dict(
-                source=f"{self.LOGO_URL_PARTIAL}{data.cmc_coin_id}.png",
+                source=f"{con.LOGO_URL_PARTIAL}{data.cmc_coin_id}.png",
                 opacity=0.8,
                 xref="paper", yref="paper",
                 x=1.05, y=1,
