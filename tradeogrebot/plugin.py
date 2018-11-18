@@ -49,7 +49,7 @@ class TradeOgreBotPlugin:
     def check_pair(cls, func):
         def _check_pair(self, bot, update, **kwargs):
             if "data" not in kwargs or not kwargs["data"]:
-                user_id = update.message.from_user.id
+                user_id = update.effective_user.id
                 kwargs["data"] = self.db.get_user_data(user_id)
 
             if not kwargs["data"].pair:
@@ -69,7 +69,7 @@ class TradeOgreBotPlugin:
     def check_keys(cls, func):
         def _check_keys(self, bot, update, **kwargs):
             if "data" not in kwargs or not kwargs["data"]:
-                user_id = update.message.from_user.id
+                user_id = update.effective_user.id
                 kwargs["data"] = self.db.get_user_data(user_id)
 
             if not kwargs["data"].api_key or not kwargs["data"].api_secret:

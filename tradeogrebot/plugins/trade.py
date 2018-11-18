@@ -52,8 +52,10 @@ class Trade(TradeOgreBotPlugin):
             pattern="^(trade-yes|trade-no)$",
             pass_user_data=True)
 
+    @TradeOgreBotPlugin.check_pair
+    @TradeOgreBotPlugin.check_keys
     @TradeOgreBotPlugin.send_typing_action
-    def _callback_trade(self, bot, update, user_data):
+    def _callback_trade(self, bot, update, user_data, data):
         query = update.callback_query
 
         if query.data == "trade-no":
@@ -66,7 +68,6 @@ class Trade(TradeOgreBotPlugin):
 
             return
 
-        data = self.db.get_user_data(query.message.chat_id)
         pair = f"{user_data['pair'][0]}-{user_data['pair'][1]}"
 
         if user_data["type"] == "buy":

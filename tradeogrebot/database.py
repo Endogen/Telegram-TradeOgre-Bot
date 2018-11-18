@@ -109,7 +109,21 @@ class Database:
         con = sqlite3.connect(self._db_path)
         cur = con.cursor()
 
-        sql = "SELECT * FROM user_data WHERE user_hash = ?"
+        sql = "SELECT " \
+              "UD.user_hash," \
+              "UD.user_id, " \
+              "UD.first_name, " \
+              "UD.last_name, " \
+              "UD.username, " \
+              "UD.language, " \
+              "UD.pair, " \
+              "UD.api_key, " \
+              "UD.api_secret, " \
+              "KV.value " \
+              "FROM user_data UD " \
+              "JOIN key_value KV ON KV.key = UD.user_hash " \
+              "WHERE UD.user_hash = ?"
+
         cur.execute(sql, [crypt.sha256_hash(user_id)])
         con.commit()
 
@@ -117,12 +131,12 @@ class Database:
         con.close()
 
         # Decrypt data
-        for i in range(1, len(r)-1):
+        for i in range(1, 9):
             p = f"{user_id}{self._password}"
             value = crypt.sha256_dec(r[i], p, p)
             r[i] = value["decrypted"] if value else None
 
-        return UserData(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8])
+        return UserData(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9])
 
     def set_pair(self, user_id, pair):
         con = sqlite3.connect(self._db_path)
@@ -165,7 +179,8 @@ class UserData:
                  language=None,
                  pair=None,
                  api_key=None,
-                 api_secret=None):
+                 api_secret=None,
+                 properties=None):
 
         self.user_hash = user_hash
         self.user_id = user_id
@@ -176,3 +191,4 @@ class UserData:
         self.pair = pair
         self.api_key = api_key
         self.api_secret = api_secret
+        self.properties = properties.split(",") if properties else None
