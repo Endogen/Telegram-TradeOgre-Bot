@@ -1,7 +1,9 @@
 import tradeogrebot.labels as lbl
 
 from enum import auto
+from coinmarketcap import Market
 from tradeogrebot.api.tradeogre import TradeOgre
+from tradeogrebot.api.coingecko import CoinGecko
 from tradeogrebot.plugin import TradeOgreBotPlugin
 from telegram import ParseMode, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import MessageHandler, ConversationHandler, RegexHandler
@@ -88,6 +90,9 @@ class Settings(TradeOgreBotPlugin):
             parse_mode=ParseMode.MARKDOWN,
             reply_markup=self.keyboard_main())
 
+        self._save_gc_coin_id(user_id, pair)
+        self._save_cmc_coin_id(user_id, pair)
+
         return ConversationHandler.END
 
     @TradeOgreBotPlugin.send_typing_action
@@ -142,3 +147,17 @@ class Settings(TradeOgreBotPlugin):
                 resize_keyboard=True)
         else:
             return None
+
+    def _save_gc_coin_id(self, user_id, pair):
+        symbol = pair.split("-")[1]
+        for coin in CoinGecko().get_coins_list():
+            if coin["symbol"].lower() == symbol.lower():
+                self.db.set_cg_coin_id(user_id, coin["id"])
+                break
+
+    def _save_cmc_coin_id(self, user_id, pair):
+        symbol = pair.split("-")[1]
+        for listing in Market().listings()["data"]:
+            if symbol.upper() == listing["symbol"].upper():
+                self.db.set_cmc_coin_id(user_id, listing["id"])
+                break

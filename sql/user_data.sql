@@ -8,5 +8,7 @@ CREATE TABLE user_data (
 	pair TEXT,
 	api_key TEXT,
 	api_secret TEXT,
+	cmc_coin_id TEXT,
+	cg_coin_id TEXT,
 	date_time DATETIME DEFAULT CURRENT_TIMESTAMP
 )

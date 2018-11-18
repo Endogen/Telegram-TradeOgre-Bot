@@ -105,25 +105,12 @@ class Database:
         con.commit()
         con.close()
 
+    # Read every user data except the datetime that the entry was created
     def get_user_data(self, user_id):
         con = sqlite3.connect(self._db_path)
         cur = con.cursor()
 
-        sql = "SELECT " \
-              "UD.user_hash," \
-              "UD.user_id, " \
-              "UD.first_name, " \
-              "UD.last_name, " \
-              "UD.username, " \
-              "UD.language, " \
-              "UD.pair, " \
-              "UD.api_key, " \
-              "UD.api_secret, " \
-              "KV.value " \
-              "FROM user_data UD " \
-              "JOIN key_value KV ON KV.key = UD.user_hash " \
-              "WHERE UD.user_hash = ?"
-
+        sql = "SELECT * FROM user_data WHERE user_hash = ?"
         cur.execute(sql, [crypt.sha256_hash(user_id)])
         con.commit()
 
@@ -131,12 +118,12 @@ class Database:
         con.close()
 
         # Decrypt data
-        for i in range(1, 9):
+        for i in range(1, len(r)-1):
             p = f"{user_id}{self._password}"
             value = crypt.sha256_dec(r[i], p, p)
             r[i] = value["decrypted"] if value else None
 
-        return UserData(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9])
+        return UserData(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10])
 
     def set_pair(self, user_id, pair):
         con = sqlite3.connect(self._db_path)
@@ -167,6 +154,36 @@ class Database:
         con.commit()
         con.close()
 
+    # Save CoinMarketCap coin ID
+    def set_cmc_coin_id(self, user_id, coin_id):
+        con = sqlite3.connect(self._db_path)
+        cur = con.cursor()
+
+        p = f"{user_id}{self._password}"
+        coin_id = crypt.sha256_enc(coin_id, p, p)["encrypted"]
+
+        id_hash = crypt.sha256_hash(user_id)
+
+        sql = "UPDATE user_data SET cmc_coin_id = ? WHERE user_hash = ?"
+        cur.execute(sql, [coin_id, id_hash])
+        con.commit()
+        con.close()
+
+    # Save CoinGecko coin ID
+    def set_cg_coin_id(self, user_id, coin_id):
+        con = sqlite3.connect(self._db_path)
+        cur = con.cursor()
+
+        p = f"{user_id}{self._password}"
+        coin_id = crypt.sha256_enc(coin_id, p, p)["encrypted"]
+
+        id_hash = crypt.sha256_hash(user_id)
+
+        sql = "UPDATE user_data SET cg_coin_id = ? WHERE user_hash = ?"
+        cur.execute(sql, [coin_id, id_hash])
+        con.commit()
+        con.close()
+
 
 class UserData:
 
@@ -180,7 +197,8 @@ class UserData:
                  pair=None,
                  api_key=None,
                  api_secret=None,
-                 properties=None):
+                 cmc_coin_id=None,
+                 cg_coin_id=None):
 
         self.user_hash = user_hash
         self.user_id = user_id
@@ -191,4 +209,5 @@ class UserData:
         self.pair = pair
         self.api_key = api_key
         self.api_secret = api_secret
-        self.properties = properties.split(",") if properties else None
+        self.cmc_coin_id = cmc_coin_id
+        self.cg_coin_id = cg_coin_id

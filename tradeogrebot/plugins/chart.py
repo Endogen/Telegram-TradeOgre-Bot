@@ -1,5 +1,4 @@
 import io
-import threading
 import pandas as pd
 import plotly.io as pio
 import plotly.graph_objs as go
@@ -8,7 +7,6 @@ import tradeogrebot.labels as lbl
 
 from io import BytesIO
 from pandas import DataFrame
-from coinmarketcap import Market
 from telegram import ParseMode
 from telegram.ext import RegexHandler, CommandHandler
 from tradeogrebot.api.coingecko import CoinGecko
@@ -21,8 +19,8 @@ class Chart(TradeOgreBotPlugin):
     BTN_CHART = f"{emo.CHART} Chart"
     TIME_FRAME = 72  # Hours
 
-    logo_url = str()
-    symbol = str()
+    # Partial URL for coin logo
+    LOGO_URL_PARTIAL = "https://s2.coinmarketcap.com/static/img/coins/128x128/"
 
     def get_handlers(self):
         return [self._get_chart_handler(), self._get_cmd_handler()]
@@ -40,18 +38,15 @@ class Chart(TradeOgreBotPlugin):
         from_cur = data.pair.split("-")[0]
         to_cur = data.pair.split("-")[1]
 
-        self.symbol = to_cur
-        logo_thread = threading.Thread(target=self._get_coin_logo_url())
-        logo_thread.start()
-
-        for coin in CoinGecko().get_coins_list():
-            if coin["symbol"].lower() == to_cur.lower():
-                coin_id = coin["id"]
-                break
+        if not data.cg_coin_id:
+            for coin in CoinGecko().get_coins_list():
+                if coin["symbol"].lower() == to_cur.lower():
+                    data.cg_coin_id = coin["id"]
+                    break
 
         vs_cur = from_cur.lower()
         days = int(self.TIME_FRAME / 24)
-        market_data = CoinGecko().get_coin_market_chart_by_id(coin_id, vs_cur, days)
+        market_data = CoinGecko().get_coin_market_chart_by_id(data.cg_coin_id, vs_cur, days)
 
         # Volume
         df_volume = DataFrame(market_data["total_volumes"], columns=["DateTime", "Volume"])
@@ -76,11 +71,9 @@ class Chart(TradeOgreBotPlugin):
             )
         )
 
-        logo_thread.join()
-
         layout = go.Layout(
             images=[dict(
-                source=self.logo_url,
+                source=f"{self.LOGO_URL_PARTIAL}{data.cmc_coin_id}.png",
                 opacity=0.8,
                 xref="paper", yref="paper",
                 x=1.05, y=1,
@@ -123,14 +116,3 @@ class Chart(TradeOgreBotPlugin):
         update.message.reply_photo(
             photo=io.BufferedReader(BytesIO(pio.to_image(fig, format="webp"))),
             parse_mode=ParseMode.MARKDOWN)
-
-    def _get_coin_logo_url(self):
-        listings = Market().listings()
-
-        coin_id = None
-        for listing in listings["data"]:
-            if self.symbol.upper() == listing["symbol"].upper():
-                coin_id = listing["id"]
-                break
-
-        self.logo_url = f"https://s2.coinmarketcap.com/static/img/coins/128x128/{coin_id}.png"
