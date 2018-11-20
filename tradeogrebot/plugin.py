@@ -160,6 +160,7 @@ class TradeOgreBotPlugin:
         method = inspect.currentframe().f_code.co_name
         raise NotImplementedError(f"Interface method '{method}' not implemented")
 
+    # TODO: Set expected return type
     def get_sequence(self):
         return Sequence.NORMAL
 

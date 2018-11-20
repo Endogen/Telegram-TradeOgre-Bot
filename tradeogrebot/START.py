@@ -1,5 +1,6 @@
 import os
 import logging
+import tradeogrebot.constants as con
 
 from argparse import ArgumentParser
 from tradeogrebot.database import Database
@@ -9,18 +10,6 @@ from logging.handlers import TimedRotatingFileHandler
 
 
 class TradeOgreBot:
-
-    _CFG_DIR = "conf"
-    _CFG_FILE = "config.json"
-    _TOK_FILE = "bot.token"
-
-    _LOG_DIR = "log"
-    _LOG_FILE = "tradeogrebot.log"
-
-    _DAT_DIR = "data"
-    _DAT_FILE = "tradeogrebot.db"
-
-    _SQL_DIR = "sql"
 
     def __init__(self):
         # Parse command line arguments
@@ -35,7 +24,7 @@ class TradeOgreBot:
         self._init_logger(log_path, log_level)
 
         # Prepare database
-        sql_dir = self._SQL_DIR
+        sql_dir = con.SQL_DIR
         db_path = self.args.database
         password = input("Enter DB password: ")
 
@@ -55,7 +44,7 @@ class TradeOgreBot:
             "-cfg",
             dest="config",
             help="path to conf file",
-            default=os.path.join(self._CFG_DIR, self._CFG_FILE),
+            default=os.path.join(con.CFG_DIR, con.CFG_FILE),
             required=False,
             metavar="FILE")
 
@@ -73,7 +62,7 @@ class TradeOgreBot:
             "-log",
             dest="logfile",
             help="path to logfile",
-            default=os.path.join(self._LOG_DIR, self._LOG_FILE),
+            default=os.path.join(con.LOG_DIR, con.LOG_FILE),
             required=False,
             metavar="FILE")
 
@@ -92,7 +81,7 @@ class TradeOgreBot:
             "-db",
             dest="database",
             help="path to SQLite database file",
-            default=os.path.join(self._DAT_DIR, self._DAT_FILE),
+            default=os.path.join(con.DAT_DIR, con.DAT_FILE),
             required=False,
             metavar="FILE")
 
@@ -151,7 +140,7 @@ class TradeOgreBot:
         if self.args.token:
             return self.args.token
 
-        token_path = os.path.join(self._CFG_DIR, self._TOK_FILE)
+        token_path = os.path.join(con.CFG_DIR, con.TOK_FILE)
 
         if os.path.isfile(token_path):
             with open(token_path, 'r') as file:
