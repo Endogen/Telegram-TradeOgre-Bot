@@ -1,6 +1,13 @@
+import os
+import gettext
 import tradeogrebot.emoji as emo
+import tradeogrebot.constants as con
 
-HELP = f"{emo.INFO} Help & Info"
+localedir = os.path.join(os.path.abspath(os.path.dirname(__file__)), con.LANG_DIR)
+translate = gettext.translation('tradeogrebot', localedir, fallback=True)  # languages=["de"]
+_ = translate.gettext
+
+HELP = f"{emo.INFO} {_(Help & Info)}"
 SHUTDOWN = f"{emo.FINISH} Shutdown"
 REMOVE_AC = f"{emo.CANCEL} Remove Account"
 FEEDBACK = f"{emo.SPEECH} Feedback"
