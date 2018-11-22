@@ -76,6 +76,14 @@ class TradeOgreBot:
             default=30,
             required=False)
 
+        # Module log level
+        parser.add_argument(
+            "-mlvl",
+            dest="mloglevel",
+            help="set log level for a module",
+            default=None,
+            required=False)
+
         # Database
         parser.add_argument(
             "-db",
@@ -134,6 +142,13 @@ class TradeOgreBot:
             file_log.setLevel(level)
 
             logger.addHandler(file_log)
+
+        # Set log level for specified modules
+        if self.args.mloglevel:
+            for modlvl in self.args.mloglevel.split(","):
+                module, loglvl = modlvl.split("=")
+                logr = logging.getLogger(module)
+                logr.setLevel(int(loglvl))
 
     # Read bot token from file
     def _get_bot_token(self):
