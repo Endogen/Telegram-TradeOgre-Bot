@@ -26,13 +26,13 @@ class Database:
                         cur.execute(f.read())
                         con.commit()
 
-            self.__init_cfg()
+            self._init_cfg()
             con.close()
 
         else:
-            self.__check_password()
+            self._check_password()
 
-    def __init_cfg(self):
+    def _init_cfg(self):
         con = sqlite3.connect(self._db_path)
         cur = con.cursor()
 
@@ -42,7 +42,7 @@ class Database:
         con.commit()
         con.close()
 
-    def __check_password(self):
+    def _check_password(self):
         con = sqlite3.connect(self._db_path)
         cur = con.cursor()
 
