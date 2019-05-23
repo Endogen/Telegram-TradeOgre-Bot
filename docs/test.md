@@ -17,3 +17,5 @@ This is it :-)
 ```python
 print(str("WTF!"))
 ```
+
+Add [link to the bot](https://t.me/trade_ogre_bot?start)

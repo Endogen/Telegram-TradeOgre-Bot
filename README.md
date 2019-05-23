@@ -1,7 +1,7 @@
 #### Run in background
-```
-nohup python3 START.py &
-```
+1. Start with `python3.6 -m tradeogrebot.START`
+2. Press CTRL + Z
+3. Enter `bg`
 
 #### Bring back to foreground
 ```
@@ -41,3 +41,17 @@ apt-get install libgconf-2-4
 ```
 xvfb-run -a /path/to/orca "$@"
 ```
+
+#### Telegram commands
+```
+ticker - Ticker
+balance - Balance
+chart - Chart
+stats - Stats
+orders - Orders
+```
+
+#### Webseite erzeugen
+`bundle exec jekyll build`
+#### Webseite anzeigen
+`bundle exec jekyll serve`

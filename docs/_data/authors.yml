@@ -26,7 +26,7 @@ author1:
   # Social media icons in sidebar.
   # Comment/uncommet to show/hide. Rearrange to change the order in which they appear.
   social:
-    twitter:         endogen
+    # twitter:         endogen
     github:          Endogen/Telegram-TradeOgre-Bot
     # download:        <url>
     # email:           <mail@domain.tld>
@@ -49,7 +49,7 @@ author1:
     # ello:            <username>
     # twitch:          <username>
     # steam:           <number>
-    reddit:          endogen
+    # reddit:          endogen
     # tumblr:          <username>
     # pinterest:       <username>
     # foursquare:      <number>
