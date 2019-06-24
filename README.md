@@ -50,8 +50,3 @@ chart - Chart
 stats - Stats
 orders - Orders
 ```
-
-#### Webseite erzeugen
-`bundle exec jekyll build`
-#### Webseite anzeigen
-`bundle exec jekyll serve`
